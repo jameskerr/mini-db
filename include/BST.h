@@ -15,7 +15,6 @@ public:
 	// PUBLIC METHODS
 	void insert(T data);
 	bool delete(T data);
-	T* toArray();
 	void print();
 	int length();
 
