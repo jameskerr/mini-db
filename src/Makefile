@@ -1,4 +1,4 @@
-# A simple Makefile for CPSC 350
+# A simple Makefile for CPSC 350 edit
 # Assumes the following directory hierarchy:
 # Assignment X
 # 	src
