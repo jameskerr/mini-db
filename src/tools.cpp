@@ -32,7 +32,7 @@ void openIfStream( ifstream &inStream, string prompt )
 {
 	do
 	{
-		inStream.open( getLine( prompt ) );
+		inStream.open( getLine( prompt ).c_str() );
 		if ( !inStream.fail() ) break;
 		cout << "File Open Failure." << endl;
 		inStream.clear();
@@ -42,7 +42,7 @@ void openOfStream( ofstream &outStream, string prompt )
 {
 	do
 	{
-		outStream.open( getLine( prompt ) );
+		outStream.open( getLine( prompt ).c_str() );
 		if ( !outStream.fail() ) break;
 		cout << "File Open Failure." << endl;
 		outStream.clear();

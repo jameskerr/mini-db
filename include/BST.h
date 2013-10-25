@@ -14,7 +14,8 @@ public:
 	virtual ~BST();
 	// PUBLIC METHODS
 	void insert(T data);
-	bool delete(T data);
+	TreeNode<T>* find(T data);
+	bool remove(T data);
 	void print();
 	int length();
 
@@ -40,26 +41,93 @@ BST<T>::~BST() {
 
 template <class T>
 void BST<T>::insert(T data) {
+	TreeNode<T>* parent = 0;
 	TreeNode<T>** cursor = &root;
+	
 	while (*cursor != 0) {
+		parent = (*cursor);
 		if ((*cursor)->data < data)
 			cursor = &((*cursor)->left);
 		else
 			cursor = &((*cursor)->right);
 	}
-	*cursor = new TreeNode<T>(data);
+	*cursor = new TreeNode<T>(data,0,0,parent);
 	++size;
 }
 
 template <class T>
-bool BST<T>::delete(T data) {
-	// do some awesome stuff in here
-	// Just go throught the cases
+TreeNode<T>* BST<T>::find(T data) {
+	TreeNode<T>** cursor = &root;
+	while (*cursor != 0 && (*cursor)->data != data) {
+		if ((*cursor)->data < data)
+			cursor = &((*cursor)->left);
+		else
+			cursor = &((*cursor)->right);
+	}
+	return *cursor;
+}
+
+template <class T>
+bool BST<T>::remove(T data) {
+	TreeNode<T>* target = find(data);  						// Get a pointer to the data
+	if (target == 0) return false; 	   						// The data doesn't exist return false
+
+	if (target == root) { 									// Case for the root
+		if (root->hasLeftChild() && root->hasRightChild()) { 	// The root has two children
+			root = getSuccessor(target);
+			root->left = target->left;
+			root->right = target->right;
+		}
+		else
+		if (root->hasLeftChild()) 							// The root only has a left child
+			root = root->left;
+		else
+		if (root->hasRightChild()) 							// The root only has a right child
+			root = root->right;
+		else												// The root has no chilren
+			root = 0;
+	}
+	else
+	if (target->hasLeftChild() && target->hasRightChild()) {	// The target has two children
+		if (target->parent->left == target) {
+			TreeNode<T>* pred = getPredecessor(target);
+			target->parent->left = pred;
+			pred->right = target->right;
+		}			
+		else {
+			TreeNode<T>* succ = getSuccessor(target);
+			target->parent->right = succ;
+			succ->left = target->left;
+		}
+	}
+	else 
+	if (target->hasLeftChild()) {							// The target only has left child
+		if (target->parent->left == target)
+			target->parent->left = target->left;
+		else
+			target->parent->right = target->left;
+	}
+	else
+	if (target->hasRightChild()) {							// The target only has a right child
+		if (target->parent->left == target)
+			target->parent->left = target->right;
+		else
+			target->parent->right = target->right;
+	}
+	else {													// Thee target has no chilren
+		if (target->parent->left == target) 				
+			target->parent->left = 0;
+		else
+			target->parent->right = 0;
+	}
+	delete target;
+	return true;
 }
 
 template <class T>
 void BST<T>::print() {
 	pPrint(root);
+	std::cout << std::endl;
 }
 
 template <class T>
@@ -88,7 +156,14 @@ template <class T>
 TreeNode<T>* BST<T>::getSuccessor(TreeNode<T>* node) {
 	if (node->right == 0) return 0;
 	node = node->right;
+
+	if (!node->hasLeftChild()) {						// Case if the the node to the right is the predecessor
+		node->parent->right = node->right;
+		return node;
+	}
+	
 	while (node->left != 0) node = node->left;
+	node->parent->left = 0;
 	return node;
 }
 
@@ -96,7 +171,14 @@ template <class T>
 TreeNode<T>* BST<T>::getPredecessor(TreeNode<T>* node) {
 	if (node->left == 0) return 0;
 	node = node->left;
+
+	if (!node->hasRightChild()) {					// Case if the the node to the left is the predecessor
+		node->parent->left = node->left;
+		return node;
+	}
+		
 	while (node->right != 0) node = node->right;
+	node->parent->right = 0;
 	return node;
 }
 #endif
