@@ -8,8 +8,8 @@ template <class T>
 class TreeNode {
 public:
 	template <class U> friend class BST;
-	TreeNode(T theData, TreeNode<T>* theLeft = 0, TreeNode<T>* theRight = 0, TreeNode<T>* theParent = 0)
-		:data(theData), left(theLeft), right(theRight), parent(theParent) {}
+	TreeNode(T theData, TreeNode<T>* theLeft = 0, TreeNode<T>* theRight = 0)
+		:data(theData), left(theLeft), right(theRight) {}
 	virtual ~TreeNode() {}
 	inline T getData() { return data; }
 	 bool hasNoChilren();
@@ -19,7 +19,6 @@ private:
 	T data;
 	TreeNode<T>* left;
 	TreeNode<T>* right;
-	TreeNode<T>* parent;
 };
 
 template <class T>
