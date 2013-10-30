@@ -16,13 +16,15 @@ using std::string;
 class Student{
 public:
     Student();
+    Student(int Id): ID(Id) {}
     Student(int Id, int adv, double g, string n, string l, string m);
     virtual ~Student();
     
     // Comparison operators
-    bool operator > (int);
-    bool operator < (int);
-    bool operator == (int);
+    bool operator > (const Student& other);
+    bool operator < (const Student& other);
+    bool operator == (const Student& other);
+    bool operator != (const Student& other);
     
     //Serialization/Deserialization operators
     bool serialize (char* addr, int &dPtr);

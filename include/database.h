@@ -10,14 +10,14 @@
 
 #include <iostream>
 #include "BST.h"
-#include "student.h"
-#include "faculty.h"
+#include "Student.h"
+#include "Faculty.h"
 
-
+using std::cout;
+using std::endl;
 
 class Database{
 public:
-    
     Database();
     virtual ~Database();
     
@@ -33,7 +33,7 @@ public:
     bool addFac(Faculty t);
     bool deleteFac(int id);
     bool changeAdvisor(int sId, int fId);
-    bool removeAdvisee(int fId, sId);
+    bool removeAdvisee(int fId, int sId);
     
     /*
      Print all students
@@ -55,19 +55,19 @@ public:
     
 private:
     // Private Attributes
-    BST<student> sTree;
-    BST<faculty> fTree;
+    BST<Student> sTree;
+    BST<Faculty> fTree;
     int nextStuID;
     int nextFacID;
     
     //Methods
     
     // File IO
-    void initializeFiles();
-    void saveFiles();
-    bool checkFiles(std::string fileName);
-    const std::string stuFile = "studentTable.kh";
-    const std::string facFile = "facultyTable.kh";
+    // void initializeFiles();
+    // void saveFiles();
+    // bool checkFiles(std::string fileName);
+    // const std::string stuFile = "studentTable.kh";
+    // const std::string facFile = "facultyTable.kh";
     
     //Operations helper functions
         //Faculty

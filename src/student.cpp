@@ -5,7 +5,7 @@
 //
 
 #include "student.h"
-#include "sstream"
+#include <sstream>
 
 Student::Student(){
     this->ID = 0;
@@ -28,14 +28,18 @@ Student::~Student(){
 }
 
 // Comparison operators
-bool Student::operator > (int other){
-    return ID > other;
+bool Student::operator > (const Student& other){
+    return ID > other.ID;
 }
-bool Student::operator < (int other){
-    return ID < other;
+bool Student::operator < (const Student& other){
+    return ID < other.ID;
 }
-bool Student::operator == (int other){
-    return ID == other;
+bool Student::operator == (const Student& other){
+    return ID == other.ID;
+}
+
+bool Student::operator != (const Student& other) {
+    return ID != other.ID;
 }
 
 //Serialization/Deserialization operators
@@ -136,11 +140,11 @@ string Student::getStr(int &dPtr, char *d){
 }
 
 std::string Student::toString(){
-    sstream i, g, a;
+    std::stringstream i, g, a;
     i << ID;
     g << GPA;
     a << advisor;
-    string temp = "ID: " + i.str() + "\nName: " + name + "\nAdvisor: " + a + "\nMajor: " + major + "\nLevel: " + level + "\nGPA: " + g;
+    std::string temp = "ID: " + i.str() + "\nName: " + name + "\nAdvisor: " + a.str() + "\nMajor: " + major + "\nLevel: " + level + "\nGPA: " + g.str();
     return temp;
 }
 

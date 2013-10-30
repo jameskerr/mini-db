@@ -1,10 +1,12 @@
-#include "BST.h"
+#include "Database.h"
+#include "UndoRedo.h"
 #include <iostream>
 
 using namespace std;
 
 int main() {
+	Database db;
 	
-	BST<int> tree;
+
 	return 0;
 }
