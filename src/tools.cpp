@@ -241,7 +241,7 @@ Item getStreamExtraction (string prompt, Item itemForTypeResolution, string item
 	while ( true );
 }
 int		getInt		( string prompt ) { return getStreamExtraction( prompt, int(), "integer" ); }
-float	getFloat	( string prompt ) { return getStreamExtraction( prompt, float(), "float" ); }
+double	getDouble	( string prompt ) { return getStreamExtraction( prompt, double(), "double" ); }
 char	getChar		( string prompt ) { return getStreamExtraction( prompt, char(), "character" ); }
 string	getString	( string prompt ) { return getStreamExtraction( prompt, string(), "string" ); }
 

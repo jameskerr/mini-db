@@ -11,7 +11,7 @@ using namespace std;
 extern const string WHITESPACE;
 
 int		getInt		( string prompt );
-float	getFloat	( string prompt );
+double	getDouble	( string prompt );
 char	getChar		( string prompt );
 string	getString	( string prompt );
 template <class Item> Item getStreamExtraction (string prompt, Item itemForTypeResolution, string itemName );
