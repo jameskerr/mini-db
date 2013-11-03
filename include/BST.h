@@ -19,6 +19,9 @@ public:
 	void print();
 	int length();
 
+    
+    // REED ADDED
+    TreeNode<T>* getRoot();
 private:
 	// PRIVATE ATTRIBUTES
 	TreeNode<T>* root;
@@ -30,6 +33,10 @@ private:
 	TreeNode<T>* getSuccessor(TreeNode<T>* node);
 	TreeNode<T>* getPredecessor(TreeNode<T>* node);
 };
+
+// REED ADDED
+template <class T>
+TreeNode<T>* BST<T>::getRoot(){return root;}
 
 template <class T>
 BST<T>::BST() :size(0), root(0) {}

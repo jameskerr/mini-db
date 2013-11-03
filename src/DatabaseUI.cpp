@@ -1,12 +1,15 @@
 #include "DatabaseUI.h"
 #include "tools.h"
+#include <iostream>
+
 
 using std::cout;
 using std::string;
 using std::endl;
+ 
 
 bool DatabaseUI::getStudentFromKeyboard() {
-	cout << "ADD NEW STUDENT" << endl;
+    cout << "ADD NEW STUDENT" << endl;
 	string name = getString("Name: ");
 	string level = getString("Level: ");
 	string major = getString("Major: ");
