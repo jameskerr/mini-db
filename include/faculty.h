@@ -28,33 +28,36 @@ public:
     bool operator == (const Faculty& other);
     bool operator != (const Faculty& other);
     
-    // TEMPORARILY COMMENTED OUT UNTIL WE MEET AGAIN
+
     //Serialization/Deserialization operators
-    //bool serialize (char* addr, int &dPtr);
-    //bool deserialize (char* addr, int &dPtr);
+    bool serialize (char* addr, int &dPtr);
+    bool deserialize (char* addr, int &dPtr);
     
     //Methods
     std::string toString();
+    bool addAvisee();
+    static void serializeInt(int x, int &dPtr, char *d);
     
     // Getters/Setters
     int getID() {return ID;};
     string getName() {return name;};
     string getLevel() {return level;};
     string getDepartment() {return department;};
-    BST<Student>* getAdvisees() {return &advisees; };
+    BST<int>* getAdvisees() {return &advisees;};
+    int getNumAdvisees() {return numAdvisees;};
     
 private:
     int ID;
     string name;
     string level;
     string department;
-    BST<Student> advisees;
+    BST<int> advisees;
+    int numAdvisees;
     
     // Serialization helper functions
-    //void storeStr(string str, int &dPtr, char *d);
-    //string getStr(int &dPtr, char *d);
-    //void serializeInt(int x, int &dPtr, char *d);
-    //void serializeBST(TreeNode<int>*, int dPtr, addr);
+    void storeStr(string str, int &dPtr, char *d);
+    string getStr(int &dPtr, char *d);
+    void serializeBST(TreeNode<int>*, int &dPtr, char*addr);
 
 };
 

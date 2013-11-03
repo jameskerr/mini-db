@@ -60,24 +60,18 @@ private:
     int nextStuID;
     int nextFacID;
     
+    int buffPtr;
     //Methods
+    int getNumStu();
+    int getNumFac();
     
     // File IO
-    // void initializeFiles();
-    // void saveFiles();
-    // bool checkFiles(std::string fileName);
-    // const std::string stuFile = "studentTable.kh";
-    // const std::string facFile = "facultyTable.kh";
-    
-    //Operations helper functions
-        //Faculty
-    void pFac(Faculty f);
-    void printFacForTable(Faculty f);
-    bool pAdvisees(Faculty f);
-        //Student
-    void pStu(Student s);
-    void printStuForTable(Student s);
-    bool pAdvisor(Student s);
+    void initializeFiles();
+    void saveFiles();
+    bool checkFiles(std::string fileName);
+    const std::string stuFile = "studentTable.kh";
+    const std::string facFile = "facultyTable.kh";
+    bool save();
 };
 
 #endif
