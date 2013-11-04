@@ -9,18 +9,18 @@ void UndoRedo::rollback(int level) {
 	}
 }
 
-void UndoRedo::insertedStudent(int student) {
+void UndoRedo::insertedStudent(Student student) {
 	ICommand* cmd = new InsertStudentCommand(db, student);
 	undo_commands.push(cmd);
 }
-void UndoRedo::removedStudent(int student) {
+void UndoRedo::removedStudent(Student student) {
 	ICommand* cmd = new RemoveStudentCommand(db, student);
 	undo_commands.push(cmd);
 }
-void UndoRedo::insertedFaculty(int faculty) {
+void UndoRedo::insertedFaculty(Faculty faculty) {
 	ICommand* cmd = new InsertFacultyCommand(db, faculty);
 	undo_commands.push(cmd);
 }
-void UndoRedo::removedFaculty(int faculty) {
+void UndoRedo::removedFaculty(Faculty faculty) {
 	ICommand* cmd = new RemoveFacultyCommand(db, faculty);
 }

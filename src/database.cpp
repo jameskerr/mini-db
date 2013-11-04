@@ -7,10 +7,16 @@
 #include "Database.h"
 #include "dirent.h"
 #include <fstream>
+#include <iostream>
+#include <iomanip> // for setw
+
+using std::setw;
 
 Database::Database()
     :nextStuID(100),
-    nextFacID(100)
+    nextFacID(100),
+    stuFile("studentTable.kh"),
+    facFile("facultyTable.kh")
 {
     initializeFiles();
 }
@@ -20,35 +26,65 @@ Database::~Database(){
 }
 
 
-bool Database::printAllStu(){
-    /*
-     cout << "ALL STUDENTS:" << endl << endl;
-     sTree.visit(sTree.getRoot(), printForTable());
-     
-     */
-    return false; // false now, because ain't workin'
+void Database::printAllStu(){
+     int width = 13;
+     cout << "ALL STUDENTS:" << endl;
+     cout << "ID" 
+         << std::setw(width) << "Name"
+         << std::setw(width) << "GPA"
+         << std::setw(width) << "Level"
+         << std::setw(width) << "Major"
+         << std::setw(width) << "Advisor" << endl;
+     TreeNode<Student>* cursor = sTree.getRoot();
+     pPrintAllStu(cursor);
+}
+void Database::pPrintAllStu(TreeNode<Student>* s) {
+    if (s == 0) return;
+    pPrintAllStu(s->getLeft());
+    printStuForTable(s);
+    pPrintAllStu(s->getRight());
 }
 bool Database::printAllFac(){
-    /*
-     cout << "ALL FACULTY:" << endl << endl;
-     sTree.visit(sTree.getRoot(), printForTable());
-     
-     // REED says, "I think we should exclude printing the advisees for obvious reasons."
-     
-     */
+    
     return false;
+}
+void Database::pPrintAllFac(TreeNode<Faculty>* f) {
+    if (f == 0) return;
+    pPrintAllFac(f->getLeft());
+    printFacForTable(f);
+    pPrintAllFac(f->getRight());
 }
 bool Database::printStu(int id){
     TreeNode<Student>* node = sTree.find(Student(id));
     if (node == 0) return false;
     cout << node->getData().toString() << endl << endl;
     return true;
-
+}
+bool Database::printStuForTable(TreeNode<Student>* s) {
+    if (s == 0) return false;
+    int width = 13;
+    cout << s->getData().getID() 
+         << std::setw(width) << s->getData().getName()
+         << std::setw(width) << s->getData().getGPA()
+         << std::setw(width) << s->getData().getLevel()
+         << std::setw(width) << s->getData().getMajor()
+         << std::setw(width) << s->getData().getAdvisor() << endl;
+    return true;
 }
 bool Database::printFac(int id){
     TreeNode<Faculty>* node = fTree.find(Faculty(id));
     if (node == 0) return false;
     cout << node->getData().toString() << endl << endl;
+    return true;
+}
+bool Database::printFacForTable(TreeNode<Faculty>* f) {
+    if (f == 0) return false;
+    int width = 13;
+    cout << f->getData().getID() 
+         << std::setw(width) << f->getData().getName()
+         << std::setw(width) << f->getData().getLevel()
+         << std::setw(width) << f->getData().getDepartment()
+         << std::setw(width) << f->getData().getNumAdvisees() << endl;
     return true;
 }
 bool Database::printAdvisor(int id){
@@ -84,29 +120,19 @@ bool Database::addStu(Student t){
     }
     return true;
 }
-bool Database::deleteStu(int id){
-    Student temp = Student(id);
-    if (sTree.find(temp)){
-        sTree.remove(temp);
-        return true;
-    }
-    return false;
+bool Database::deleteStu(Student t){
+    return sTree.remove(t);
 }
 bool Database::addFac(Faculty t){
     if (fTree.find(t))
         return false;
-    else{
+    else {
         fTree.insert(t);
     }
     return true;
 }
-bool Database::deleteFac(int id){
-    Faculty temp = Faculty(id);
-    if (fTree.find(temp)){
-        fTree.remove(temp);
-        return true;
-    }
-    return false;
+bool Database::deleteFac(Faculty t){
+    return fTree.remove(t);
 }
 bool Database::changeAdvisor(int sId, int fId){
     TreeNode<Student>* sNode = sTree.find(Student(sId));
@@ -140,7 +166,7 @@ bool Database::removeAdvisee(int fId, int sId){
      
      // See if student file exists in current directory, if not, make it
      if(!checkFiles(stuFile)){
-         sFile.open(stuFile, std::ios::in|std::ios::out|std::ios::binary|std::ios::trunc);
+         sFile.open(stuFile.c_str(), std::ios::in|std::ios::out|std::ios::binary|std::ios::trunc);
          std::cout<<"Student file not found. Creating file."<<endl;
      }
      else{
@@ -149,7 +175,7 @@ bool Database::removeAdvisee(int fId, int sId){
          // If files already exist
          std::cout<<"Student file found. Reading Contents into database."<<endl;
          
-        sFile.open(stuFile, std::ios::in|std::ios::out|std::ios::binary);
+        sFile.open(stuFile.c_str(), std::ios::in|std::ios::out|std::ios::binary);
 
          // Read studentFile into buffer
          sFile.seekg(0, std::ios::end);
@@ -179,12 +205,12 @@ bool Database::removeAdvisee(int fId, int sId){
     
      // See if faculty file exists in current directory, if not, make it
      if (!checkFiles(facFile)) {
-         fFile.open(facFile, std::ios::in|std::ios::out|std::ios::binary|std::ios::trunc);
+         fFile.open(facFile.c_str(), std::ios::in|std::ios::out|std::ios::binary|std::ios::trunc);
          std::cout<<"Faculty file not found. Creating file."<<endl;
      }
      else{
          std::cout<<"Faculty file found. Reading contents into database."<<endl;
-         fFile.open(facFile, std::ios::in|std::ios::out|std::ios::binary);
+         fFile.open(facFile.c_str(), std::ios::in|std::ios::out|std::ios::binary);
 
          // Read facultyFile into buffer
          fFile.seekg(0, std::ios::end);
@@ -215,7 +241,7 @@ bool Database::removeAdvisee(int fId, int sId){
 
 //search directory for student/faculty files
 bool Database::checkFiles(std::string fileName){
-    if(std::fstream(fileName).good()){
+    if(std::fstream(fileName.c_str()).good()){
         return true;
     }
     return false;
@@ -226,7 +252,7 @@ bool Database::save(){
     
     // SAVE STUDENT FILE
     std::fstream sFile;
-    sFile.open(stuFile, std::ios::in|std::ios::out|std::ios::binary|std::ios::app);
+    sFile.open(stuFile.c_str(), std::ios::in|std::ios::out|std::ios::binary|std::ios::app);
     int numS = getNumStu();
     int sSize = sizeof(Student) * numS;
     char sBuffer[sSize];
@@ -239,11 +265,9 @@ bool Database::save(){
     //sFile.write(sBuffer, buffPtr);
     sFile.close();
     
-    
-    
     // SAVE FACULTY TABLE
     std::fstream fFile;
-    fFile.open(stuFile, std::ios::in|std::ios::out|std::ios::binary|std::ios::app);
+    fFile.open(stuFile.c_str(), std::ios::in|std::ios::out|std::ios::binary|std::ios::app);
     int numF = getNumFac();
     int fSize = sizeof(fTree);
     char fBuffer[fSize];
