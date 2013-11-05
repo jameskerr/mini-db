@@ -1,5 +1,23 @@
 CPSC 350 - Assignment 4
 
+
+
+
+TODO LIST
+
+1) undo/redo for remove advisee
+
+2) undo/redo for change advisee
+
+3) Add save option w/o exit
+
+4) Rollforward
+
+
+
+
+
+
 --------------------------------------------------------
 DESIGNED AND PROGRAMMED BY
 
