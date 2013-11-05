@@ -212,10 +212,7 @@ bool Database::removeAdvisee(int fId, int sId){
              nextStuID = deserializeInt(buffPtr, sData);
          }
          
-         // DELETE
-         cout << endl << endl << "NUM STUDENTS: " << numEntries << endl << endl;
-         
-         for(int i = 0; i <= numEntries; ++i){
+         for(int i = 0; i < numEntries; ++i){
              Student t;
              t.deserialize(sData, buffPtr);
              
