@@ -29,9 +29,9 @@ public:
     bool printAdvisor(int id);
     bool printAdvisees(int id);
     bool addStu(Student t);
-    bool deleteStu(int id);
+    bool deleteStu(Student t);
     bool addFac(Faculty t);
-    bool deleteFac(int id);
+    bool deleteFac(Faculty t);
     bool changeAdvisor(int sId, int fId);
     bool removeAdvisee(int fId, int sId);
     
@@ -64,13 +64,18 @@ private:
     //Methods
     int getNumStu();
     int getNumFac();
+    void pPrintAllStu(TreeNode<Student>* s);
+    void pPrintAllFac(TreeNode<Faculty>* f);
+    bool printStuForTable(TreeNode<Student>* s);
+    bool printFacForTable(TreeNode<Faculty>* f);
+    void pPrintAdvisees(TreeNode<int>* n);
     
     // File IO
     void initializeFiles();
     void saveFiles();
     bool checkFiles(std::string fileName);
-    const std::string stuFile = "studentTable.kh";
-    const std::string facFile = "facultyTable.kh";
+    const std::string stuFile;
+    const std::string facFile;
     bool save();
 };
 
