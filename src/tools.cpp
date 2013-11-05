@@ -243,7 +243,7 @@ Item getStreamExtraction (string prompt, Item itemForTypeResolution, string item
 int		getInt		( string prompt ) { return getStreamExtraction( prompt, int(), "integer" ); }
 double	getDouble	( string prompt ) { return getStreamExtraction( prompt, double(), "double" ); }
 char	getChar		( string prompt ) { return getStreamExtraction( prompt, char(), "character" ); }
-string	getString	( string prompt ) { return getStreamExtraction( prompt, string(), "string" ); }
+string	getString	( string prompt ) { return getLine(prompt); }
 
 string getLine( string prompt )
 {
