@@ -291,7 +291,7 @@ bool Database::save(){
     // SAVE FACULTY TABLE
     {
         std::fstream fFile;
-        fFile.open(stuFile.c_str(), std::ios::in|std::ios::out|std::ios::binary|std::ios::app);
+        fFile.open(facFile.c_str(), std::ios::in|std::ios::out|std::ios::binary|std::ios::app);
         int numF = getNumFac();
         int fSize = sizeof(fTree);
         char fBuffer[fSize + 8];
