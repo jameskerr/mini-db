@@ -110,6 +110,17 @@ bool Database::printAdvisor(int id){
 bool Database::printAdvisees(int id){
     TreeNode<Faculty>* node = fTree.find(Faculty(id));
     if (node == 0) return false;
+    if (node->getDataPtr()->getNumAdvisees() == 0){
+        cout << "This faculty member has no advisees." << endl << endl;
+        return false;
+    }
+    int width = 13;
+    cout << "ID"
+        << std::setw(width) << "Name"
+        << std::setw(width) << "GPA"
+        << std::setw(width) << "Level"
+        << std::setw(width) << "Major"
+        << std::setw(width) << "Advisor" << endl;
     pPrintAdvisees(node->getData().getAdvisees()->getRoot());
     return true;
 }

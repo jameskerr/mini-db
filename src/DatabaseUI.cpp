@@ -62,7 +62,7 @@ void DatabaseUI::showAdvisor() {
 
 void DatabaseUI::showAdvisees() {
 	int id = getInt("Faculty ID: ");
-	if (!db->printAdvisor(id))
+	if (!db->printAdvisees(id))
 		cout << "There is no faculty with that ID." << endl;
 	pause("Press ENTER to continue...");
 }
