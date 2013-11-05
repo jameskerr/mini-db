@@ -110,6 +110,7 @@ void DatabaseUI::addFaculty() {
 	string department = getString("Department: ");
 
 	Faculty f(db->autoFacID(), name, level, department);
+	cout << "I am about to addFac" << endl;
 	db->addFac(f);
 	history->insertedFaculty(f);
 	cout << "\nFACULTY HAS BEEN ADDED" << endl;

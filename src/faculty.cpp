@@ -19,8 +19,22 @@ Faculty::Faculty(int Id, string n, string l, string d){
     this->level = l;
     this->department = d;
 }
+
+Faculty::Faculty(const Faculty& source) {
+    cout << "I am in the faculty copy constructor" << std::endl; // DELETE
+    ID = source.ID;
+    name = source.name;
+    level = source.level;
+    department = source.department;
+    advisees = source.advisees;
+}
 Faculty::~Faculty(){
     
+}
+
+bool Faculty::addAdvisee(int id) {
+    advisees.insert(id);
+    return true;
 }
 
 // Comparison operators
