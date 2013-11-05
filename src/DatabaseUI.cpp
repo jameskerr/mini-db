@@ -133,6 +133,7 @@ void DatabaseUI::deleteStudent() {
     if (!db->deleteStu(Student(stu)))
         cout << "Student does not exist." << endl;
     else{
+        history->removedStudent(db->sTree.find(Student(stu))->getData());
         cout << "Student #" << stu << " has been deleted." << endl;
     }
 	pause("Press ENTER to continue...");
@@ -143,15 +144,22 @@ void DatabaseUI::deleteFaculty() {
     if (!db->deleteFac(Faculty(fac)))
         cout << "Faculty does not exist." << endl;
     else{
+        history->removedFaculty(db->fTree.find(Faculty(fac))->getData());
         cout << "Faculty #" << fac << " has been deleted." << endl;
     }
 	pause("Press ENTER to continue...");
 }
 
 void DatabaseUI::removeAdvisee() {
+	int stu = getInt("Student ID: ");
+	int fac = getInt("Faculty ID: ");
+	if (!db->removeAdvisee(fac, stu))
+		cout << "Error.  Student ID or Faculty ID do not exist." << endl;
 	pause("Press ENTER to continue...");
 }
 
 void DatabaseUI::rollback() {
+	int steps = getInt("Number of steps to reverse: ");
+	history->rollback(steps);
 	pause("Press ENTER to continue...");
 }

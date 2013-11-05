@@ -22,7 +22,6 @@ Faculty::Faculty(int Id, string n, string l, string d){
 }
 
 Faculty::Faculty(const Faculty& source) {
-    cout << "I am in the faculty copy constructor" << std::endl; // DELETE
     ID = source.ID;
     name = source.name;
     level = source.level;

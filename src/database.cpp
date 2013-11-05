@@ -195,7 +195,6 @@ bool Database::changeAdvisor(int sId, int fId){
 }
 
 
-
 bool Database::removeAdvisee(int fId, int sId){
     TreeNode<Faculty>* fNode = fTree.find(Faculty(fId));
     TreeNode<Student>* sNode = sTree.find(Student(sId));
@@ -205,7 +204,6 @@ bool Database::removeAdvisee(int fId, int sId){
             // Set student advisor to empty
             sNode->getDataPtr()->setAdvisor(0);
         }
-        
         return true;
     }
     return false;
