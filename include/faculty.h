@@ -19,12 +19,8 @@ class Faculty{
 public:
     Faculty();
     Faculty(int Id) :ID(Id) {}
-    Faculty(const Faculty &t): // copy constructor
-        ID(t.ID),
-        name(t.name),
-        level(t.level),
-        department(t.department),
-        advisees(t.advisees) {}
+    Faculty(const Faculty &t);
+
     Faculty(int Id, string n, string l, string d);
     virtual ~Faculty();
     
@@ -33,6 +29,7 @@ public:
     bool operator < (const Faculty& other);
     bool operator == (const Faculty& other);
     bool operator != (const Faculty& other);
+
     
 
     //Serialization/Deserialization operators
@@ -41,7 +38,7 @@ public:
     
     //Methods
     std::string toString();
-    bool addAvisee();
+    bool addAdvisee(int id);
     
     // Getters/Setters
     int getID() {return ID;};

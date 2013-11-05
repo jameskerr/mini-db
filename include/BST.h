@@ -11,18 +11,20 @@ class BST {
 public:
 	// CONSTRUCTORS
 	BST();
+	BST(const BST& source);
 	virtual ~BST();
+
+	// OPERATOR OVERLOADS
+	BST<T>& operator = (const BST<T>& source);
+
 	// PUBLIC METHODS
-	void traverse(TreeNode<T>* start, bool visit(TreeNode<T>*));
 	void insert(T data);
 	TreeNode<T>* find(T data);
 	bool remove(T data);
 	void print();
 	int length();
-
-    
-    // REED ADDED
     TreeNode<T>* getRoot();
+
 private:
 	// PRIVATE ATTRIBUTES
 	TreeNode<T>* root;
@@ -33,11 +35,8 @@ private:
 	void pPrint(TreeNode<T>* node);
 	TreeNode<T>* getSuccessor(TreeNode<T>* node);
 	TreeNode<T>* getPredecessor(TreeNode<T>* node);
+	TreeNode<T>* pCopy(TreeNode<T>* node);
 };
-
-// REED ADDED
-template <class T>
-TreeNode<T>* BST<T>::getRoot(){return root;}
 
 template <class T>
 BST<T>::BST() :size(0), root(0) {}
@@ -45,6 +44,21 @@ BST<T>::BST() :size(0), root(0) {}
 template <class T>
 BST<T>::~BST() {
 	clobber(root);
+}
+
+template <class T>
+BST<T>::BST(const BST<T>& source) {
+	root = new TreeNode<T>(source.root->data, pCopy(source.root->left), pCopy(source.root->right));
+	size = source.size;
+}
+
+template <class T>
+BST<T>& BST<T>::operator = (const BST<T>& source) {
+	size = source.size;
+	clobber(root);
+	if (source.root != 0)
+		root = new TreeNode<T>(source.root->data, pCopy(source.root->left), pCopy(source.root->right));
+	return *this;
 }
 
 template <class T>
@@ -152,6 +166,9 @@ int BST<T>::length() {
 }
 
 template <class T>
+TreeNode<T>* BST<T>::getRoot() { return root; }
+
+template <class T>
 void BST<T>::pPrint(TreeNode<T>* node) {
 	if (node == 0) return;
 	pPrint(node->left);
@@ -169,6 +186,12 @@ void BST<T>::clobber(TreeNode<T>* node) {
 }
 
 template <class T>
+TreeNode<T>* BST<T>::pCopy(TreeNode<T>* source) {
+	if (source == 0) return 0;
+	return new TreeNode<T>(source->data, pCopy(source->left), pCopy(source->right));
+}
+
+template <class T>
 TreeNode<T>* BST<T>::getSuccessor(TreeNode<T>* node) {
 	if (node->right == 0) return 0;
 	TreeNode<T>* parent = node;
@@ -178,7 +201,6 @@ TreeNode<T>* BST<T>::getSuccessor(TreeNode<T>* node) {
 		parent->right = node->right;
 		return node;
 	}
-	
 	while (node->left != 0) { parent = node; node = node->left; }
 	parent->left = 0;
 	return node;
@@ -194,17 +216,9 @@ TreeNode<T>* BST<T>::getPredecessor(TreeNode<T>* node) {
 		parent->left = node->left;
 		return node;
 	}
-		
+
 	while (node->right != 0) { parent = node; node = node->right; }
 	parent->right = 0;
 	return node;
-}
-
-template <class T>
-void BST<T>::traverse(TreeNode<T>* node, bool visit(TreeNode<T>*)) {
-	if (node == 0) return;
-	traverse(node->left, visit);
-	visit(node);
-	traverse(node->right, visit);
 }
 #endif
