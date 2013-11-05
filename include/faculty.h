@@ -36,7 +36,7 @@ public:
     
 
     //Serialization/Deserialization operators
-    bool serialize (char* addr, int &dPtr);
+    bool serialize (std::fstream &file);
     bool deserialize (char* addr, int &dPtr);
     
     //Methods
@@ -59,10 +59,10 @@ private:
     BST<int> advisees;
     
     // Serialization helper functions
-    void storeStr(string str, int &dPtr, char *d);
+    void storeStr(string str, std::fstream &file);
     string getStr(int &dPtr, char *d);
-    void serializeBST(TreeNode<int>*, int &dPtr, char*addr);
-    void serializeInt(int x, int &dPtr, char *d);
+    void serializeBST(TreeNode<int>*, std::fstream &file);
+    void serializeInt(int x, std::fstream &file);
 };
 
 #endif
