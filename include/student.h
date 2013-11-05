@@ -36,7 +36,7 @@ public:
     // Getters/Setters
     int getID() {return ID;};
     int getAdvisor() {return advisor;};
-    void setAvisor(int x) {advisor = x;};
+    void setAdvisor(int x) {advisor = x;};
     double getGPA() {return GPA;};
     string getName() {return name;};
     string getLevel() {return level;};

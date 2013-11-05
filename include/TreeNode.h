@@ -12,6 +12,7 @@ public:
 		:data(theData), left(theLeft), right(theRight) {}
 	virtual ~TreeNode() {}
 	inline T getData() { return data; }
+	inline T* getDataPrt() { return &data; }
 	inline TreeNode<T>* getLeft() { return left; };
 	inline TreeNode<T>* getRight() { return right; };
 

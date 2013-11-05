@@ -121,25 +121,21 @@ void Database::pPrintAdvisees(TreeNode<int>* node){
 }
 
 bool Database::addStu(Student t){
-    sTree.insert(t);
-    TreeNode<Faculty>* fNode = fTree.find(Faculty(t.getAdvisor()));
-    if(fNode != 0){
-        fNode->getData().getAdvisees()->insert(t.getID());
-    }
-    return true;
+    return sTree.insert(t);
 }
+
 bool Database::deleteStu(Student t){
     return sTree.remove(t);
 }
+
 bool Database::addFac(Faculty t){
-    fTree.insert(t);
-    return true;
+    return fTree.insert(t);
 }
     
 bool Database::deleteFac(Faculty t){
-    fTree.remove(t);
-    return true;
+    return fTree.remove(t);
 }
+
 bool Database::changeAdvisor(int sId, int fId){
     TreeNode<Student>* sNode = sTree.find(Student(sId));
     TreeNode<Faculty>* fNode = fTree.find(Faculty(fId));
@@ -148,7 +144,7 @@ bool Database::changeAdvisor(int sId, int fId){
     if (fNode != 0){
         if(sNode != 0){
             // Add new advisor to student
-            sNode->getData().setAvisor(fId);
+            sNode->getData().setAdvisor(fId);
             
             // Add student to advisee list
             fNode->getData().getAdvisees()->insert(sId);
