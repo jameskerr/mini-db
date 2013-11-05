@@ -9,11 +9,13 @@ class UndoRedo {
 public:
 	UndoRedo(Database* theDb): db(theDb) {}
 	void rollback(int level);
+	void rollforward(int level);
 	void insertedStudent(Student student);
 	void removedStudent(Student student);
 	void insertedFaculty(Faculty faculty);
 	void removedFaculty(Faculty faculty);
 	void removedAdvisee(int facID, int stuID);
+	void changedAdvisor(int stuID, int newAdivsor, int oldAdvisor);
 
 private:
 	Database* db;

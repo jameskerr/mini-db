@@ -37,7 +37,7 @@ bool Database::printAllStu(){
     if (getNumStu() == 0) return false;
      int width = 18;
      cout << "ALL STUDENTS:" << endl;
-     cout << "ID" 
+     cout << std::setw(width) <<"ID" 
          << std::setw(width) << "Name"
          << std::setw(width) << "GPA"
          << std::setw(width) << "Level"
@@ -60,7 +60,8 @@ void Database::pPrintAllStu(TreeNode<Student>* s) {
 bool Database::printStuForTable(TreeNode<Student>* s) {
     if (s == 0) return false;
     int width = 18;
-    cout << s->getData().getID()
+    cout 
+    << std::setw(width) << s->getData().getID()
     << std::setw(width) << s->getData().getName()
     << std::setw(width) << s->getData().getGPA()
     << std::setw(width) << s->getData().getLevel()
@@ -75,7 +76,7 @@ bool Database::printAllFac(){
     if (getNumFac() == 0) return false;
     int width = 18;
     cout << "ALL FACULTY:" << endl;
-    cout << "ID"
+    cout << std::setw(width) <<"ID" 
         << std::setw(width) << "Name"
         << std::setw(width) << "Level"
         << std::setw(width) << "Department"
@@ -97,7 +98,8 @@ void Database::pPrintAllFac(TreeNode<Faculty>* f) {
 bool Database::printFacForTable(TreeNode<Faculty>* f) {
     if (f == 0) return false;
     int width = 18;
-    cout << f->getDataPtr()->getID()
+    cout 
+    << std::setw(width) << f->getDataPtr()->getID()
     << std::setw(width) << f->getDataPtr()->getName()
     << std::setw(width) << f->getDataPtr()->getLevel()
     << std::setw(width) << f->getDataPtr()->getDepartment()
@@ -141,7 +143,7 @@ bool Database::printAdvisees(int id){
         return true;
     }
     int width = 18;
-    cout << "ID"
+    cout << std::setw(width) << "ID"
         << std::setw(width) << "Name"
         << std::setw(width) << "GPA"
         << std::setw(width) << "Level"

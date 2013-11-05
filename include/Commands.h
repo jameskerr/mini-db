@@ -71,7 +71,7 @@ private:
 	Faculty faculty; 
 };
 
-class RemoveAdviseeCommand :public ICommand {
+class RemoveAdviseeCommand : public ICommand {
 public:
 	RemoveAdviseeCommand(Database* theDb, int theFacID, int theStuID): db(theDb), facID(theFacID), stuID(theStuID) {}
 	inline void execute() {
@@ -88,5 +88,22 @@ private:
 	int stuID;
 };
 
-
+class ChangeAdvisorCommand : public ICommand {
+public:
+	ChangeAdvisorCommand(Database* theDb, int theStuID, int theNewAdvisor, int theOldAdvisor) 
+	:db(theDb), stuID(theStuID), newAdvisor(theNewAdvisor), oldAdvisor(theOldAdvisor) {}
+	inline void execute() {
+		db->changeAdvisor(stuID, newAdvisor);
+		cout << "Student # " << stuID << " now has faculty #" << newAdvisor << " as his/her advisor." << endl;
+	}
+	inline void unexecute() {
+		db->changeAdvisor(stuID, oldAdvisor);
+		cout << "Student # " << stuID << " now has faculty #" << oldAdvisor << " as his/her advisor." << endl;
+	}
+private:
+	Database* db;
+	int stuID;
+	int newAdvisor;
+	int oldAdvisor;
+};
 #endif

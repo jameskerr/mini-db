@@ -12,6 +12,18 @@ void UndoRedo::rollback(int level) {
 	}
 }
 
+void UndoRedo::rollforward(int level) {
+	for (int i = 0; i < level; ++i) {
+		if (redo_commands.length() == 0) {
+			cout << "No more redo commands available." << endl;
+			return;
+		}
+		ICommand* cmd = undo_commands.pop();
+		cmd->execute();
+		undo_commands.push(cmd);
+	}
+}
+
 void UndoRedo::insertedStudent(Student student) {
 	ICommand* cmd = new InsertStudentCommand(db, student);
 	undo_commands.push(cmd);
@@ -30,5 +42,9 @@ void UndoRedo::removedFaculty(Faculty faculty) {
 }
 void UndoRedo::removedAdvisee(int facID, int stuID) {
 	ICommand* cmd = new RemoveAdviseeCommand(db, facID, stuID);
+	undo_commands.push(cmd);
+}
+void UndoRedo::changedAdvisor(int stuID, int newAdvisor, int oldAdvisor) {
+	ICommand* cmd = new ChangeAdvisorCommand(db, stuID, newAdvisor, oldAdvisor);
 	undo_commands.push(cmd);
 }

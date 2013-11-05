@@ -124,11 +124,20 @@ void DatabaseUI::addFaculty() {
 void DatabaseUI::changeAdvisor() {
 	cout << "CHANGE A STUDENT'S ADVISOR" << endl;
 	int stu = getInt("Student ID: ");
-	int fac = getInt("New faculty advisor ID: ");
-	if (!db->changeAdvisor(stu, fac)) {
-		cout << "Error.  Student ID or Faculty ID do not exist." << endl;
-	} else
-	cout << "Student #" << stu << " now has faculty #" << fac << " as his/her advisor." << endl;
+	TreeNode<Student>* sNode = db->sTree.find(Student(stu));
+	
+	if (sNode == 0) {
+		cout << "That student does not exist." << endl;
+	} else {
+		int oldAdvisor = db->sTree.find(Student(stu))->getData().getAdvisor();
+		int fac = getInt("New faculty advisor ID: ");
+		if (!db->changeAdvisor(stu, fac)) {
+			cout << "That faculty do not exist." << endl;
+		} else {
+			history->changedAdvisor(stu, fac, oldAdvisor);
+			cout << "Student #" << stu << " now has faculty #" << fac << " as his/her advisor." << endl;
+		}
+	}
 	pause("\nPress ENTER to continue...");
 }
 
