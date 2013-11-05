@@ -309,7 +309,7 @@ void Database::initializeFiles(){
     
      // See if faculty file exists in current directory, if not, make it
      if (!checkFiles(facFile)) {
-         std::cout<<"Faculty file not found. Files will be created upon exit."<<endl;
+         std::cout<<"Faculty file not found. File will be created upon exit."<<endl;
      }
      else{
          std::cout<<"Faculty file found. Reading contents into database."<<endl;
