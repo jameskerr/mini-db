@@ -42,7 +42,8 @@ public:
     bool removeAdvisee(int fId, int sId);
     inline int autoStuID() { return nextStuID++; }
     inline int autoFacID() { return nextFacID++; }
-
+    bool save();
+    
     // NEED TO SAVE THE CURRENT IDs WHEN WE SERIALIZE
     
     /*
@@ -86,7 +87,10 @@ private:
     bool checkFiles(std::string fileName);
     const std::string stuFile;
     const std::string facFile;
-    bool save();
+    int deserializeInt(int &dPtr, char *d);
+    void serializeInt(int x, int &dPtr, char *d);
+    void stuSerialize(TreeNode<Student>* s, int &dPtr, char *d);
+    void facSerialize(TreeNode<Faculty>* f, int &dPtr, char *d);
 };
 
 #endif

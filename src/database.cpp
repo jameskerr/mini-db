@@ -121,12 +121,10 @@ void Database::pPrintAdvisees(TreeNode<int>* node){
 }
 
 bool Database::addStu(Student t){
-    
     if (sTree.find(t))
         return false;
     else{
         sTree.insert(t);
-        ++nextStuID;
     }
     return true;
 }
@@ -138,19 +136,31 @@ bool Database::addFac(Faculty t){
         return false;
     else {
         fTree.insert(t);
-        ++nextFacID;
     }
     return true;
 }
+    
 bool Database::deleteFac(Faculty t){
-    return fTree.remove(t);
+    fTree.remove(t);
+    return true;
 }
 bool Database::changeAdvisor(int sId, int fId){
     TreeNode<Student>* sNode = sTree.find(Student(sId));
     TreeNode<Faculty>* fNode = fTree.find(Faculty(fId));
+    // Get student's current advisor
+    TreeNode<Faculty>* oldFac = fTree.find(Faculty(sNode->getData().getAdvisor()));
     if (fNode != 0){
         if(sNode != 0){
+            // Add new advisor to student
             sNode->getData().setAvisor(fId);
+            
+            // Add student to advisee list
+            fNode->getData().getAdvisees()->insert(sId);
+            
+            // Delete student from old advisor
+            if (oldFac != 0) {
+                oldFac->getData().getAdvisees()->remove(sId);
+            }
             return true;
         }
     }
@@ -159,8 +169,14 @@ bool Database::changeAdvisor(int sId, int fId){
 }
 bool Database::removeAdvisee(int fId, int sId){
     TreeNode<Faculty>* fNode = fTree.find(Faculty(fId));
+    TreeNode<Student>* sNode = sTree.find(Student(sId));
     if(fNode != 0){
         fNode->getData().getAdvisees()->remove(sId);
+        if (sNode != 0) {
+            // Set student advisor to empty
+            sNode->getData().setAvisor(0);
+        }
+        
         return true;
     }
     return false;
@@ -199,10 +215,8 @@ bool Database::removeAdvisee(int fId, int sId){
          buffPtr = 0;
          int numEntries = 0;
          if (size >= 4){
-             numEntries |= ((int(0 | sData[buffPtr++]) & 0xFF) << 24);
-             numEntries |= ((int(0 | sData[buffPtr++]) & 0xFF) << 16);
-             numEntries |= ((int(0 | sData[buffPtr++]) & 0xFF) << 8);
-             numEntries |= ((int(0 | sData[buffPtr++]) & 0xFF) << 0);
+             numEntries = deserializeInt(buffPtr, sData);
+             nextStuID = deserializeInt(buffPtr, sData);
          }
          
          for(int i = 0; i <= numEntries; ++i){
@@ -232,12 +246,11 @@ bool Database::removeAdvisee(int fId, int sId){
         
          buffPtr = 0;
          int numEntries = 0;
-         if (size >= 4){
-             numEntries |= ((int(0 | fData[buffPtr++]) & 0xFF) << 24);
-             numEntries |= ((int(0 | fData[buffPtr++]) & 0xFF) << 16);
-             numEntries |= ((int(0 | fData[buffPtr++]) & 0xFF) << 8);
-             numEntries |= ((int(0 | fData[buffPtr++]) & 0xFF) << 0);
+         if (size >= 8){
+             numEntries = deserializeInt(buffPtr, fData);
+             nextFacID = deserializeInt(buffPtr, fData);
          }
+         
          for (int i = 0; i < numEntries; ++i) {
              Faculty t;
              t.deserialize(fData, buffPtr);
@@ -262,37 +275,70 @@ bool Database::checkFiles(std::string fileName){
 bool Database::save(){
     
     // SAVE STUDENT FILE
-    std::fstream sFile;
-    sFile.open(stuFile.c_str(), std::ios::in|std::ios::out|std::ios::binary|std::ios::app);
-    int numS = getNumStu();
-    int sSize = sizeof(Student) * numS;
-    char sBuffer[sSize];
-    int buffPtr = 0;
-    // Load student table into buffer
-    // This function will save the number of students to the buffer first
-    Faculty::serializeInt(numS, buffPtr, sBuffer);
-    
-    //sTree.visit(sTree.getRoot(), Student.serialize(char* sBuffer, int &buffPtr))
-    //sFile.write(sBuffer, buffPtr);
-    sFile.close();
-    
+    {
+        std::fstream sFile;
+        sFile.open(stuFile.c_str(), std::ios::in|std::ios::out|std::ios::binary|std::ios::app);
+        int numS = getNumStu();
+        int sSize = sizeof(sTree);
+        char sBuffer[sSize + 8];
+        int buffPtr = 0;
+        // Load student table into buffer
+        // This function will save the number of students to the buffer first
+        serializeInt(numS, buffPtr, sBuffer);
+        serializeInt(nextStuID, buffPtr, sBuffer);
+        stuSerialize(sTree.getRoot(), buffPtr, sBuffer);
+        sFile.write(sBuffer, buffPtr);
+        sFile.close();
+    }
     // SAVE FACULTY TABLE
-    std::fstream fFile;
-    fFile.open(stuFile.c_str(), std::ios::in|std::ios::out|std::ios::binary|std::ios::app);
-    int numF = getNumFac();
-    int fSize = sizeof(fTree);
-    char fBuffer[fSize];
-    buffPtr = 0;
-    // Load faculty table into buffer
-    // First save number of faculty to file
-    Faculty::serializeInt(numF, buffPtr, fBuffer);
-    
-    //fTree.visit(fTree.getRoot(), Faculty.serialize(char* fBuffer, int &buffPtr))
-    //fFile.write(fBuffer, buffPtr);
-    fFile.close();
+    {
+        std::fstream fFile;
+        fFile.open(stuFile.c_str(), std::ios::in|std::ios::out|std::ios::binary|std::ios::app);
+        int numF = getNumFac();
+        int fSize = sizeof(fTree);
+        char fBuffer[fSize + 8];
+        buffPtr = 0;
+        // Load faculty table into buffer
+        serializeInt(numF, buffPtr, fBuffer);
+        serializeInt(nextFacID, buffPtr, fBuffer);
+        facSerialize(fTree.getRoot(), buffPtr, fBuffer);
+        // Save buffer to file
+        fFile.write(fBuffer, buffPtr);
+        fFile.close();
+    }
     
     return false; // false until functional
 }
+
+int Database::deserializeInt(int &dPtr, char *d){
+    int x = 0;
+    x |= ((int(0 | d[dPtr++]) & 0xFF) << 24);
+    x |= ((int(0 | d[dPtr++]) & 0xFF) << 16);
+    x |= ((int(0 | d[dPtr++]) & 0xFF) << 8);
+    x |= ((int(0 | d[dPtr++]) & 0xFF) << 0);
+    return x;
+}
+
+void Database::serializeInt(int x, int &dPtr, char *d){
+    d[dPtr++] = (x >> 24) & 0xFF;
+    d[dPtr++] = (x >> 16) & 0xFF;
+    d[dPtr++] = (x >> 8) & 0xFF;
+    d[dPtr++] = x & 0xFF;
+}
+
+void Database::stuSerialize(TreeNode<Student>* s, int &dPtr, char *d){
+    if (s == 0) return;
+    stuSerialize(s->getLeft(), dPtr, d);
+    s->getData().serialize(d, dPtr);
+    stuSerialize(s->getRight(), dPtr, d);
+}
+void Database::facSerialize(TreeNode<Faculty>* f, int &dPtr, char *d){
+    if (f == 0) return;
+    facSerialize(f->getLeft(), dPtr, d);
+    f->getData().serialize(d, dPtr);
+    facSerialize(f->getRight(), dPtr, d);
+}
+
 
 int Database::getNumFac(){
     return fTree.length();

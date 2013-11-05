@@ -36,7 +36,6 @@ public:
     //Methods
     std::string toString();
     bool addAvisee();
-    static void serializeInt(int x, int &dPtr, char *d);
     
     // Getters/Setters
     int getID() {return ID;};
@@ -58,7 +57,7 @@ private:
     void storeStr(string str, int &dPtr, char *d);
     string getStr(int &dPtr, char *d);
     void serializeBST(TreeNode<int>*, int &dPtr, char*addr);
-
+    void serializeInt(int x, int &dPtr, char *d);
 };
 
 #endif

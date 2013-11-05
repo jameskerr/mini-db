@@ -81,10 +81,10 @@ void Faculty::serializeInt(int x, int &dPtr, char *d){
  }
 
  void Faculty::serializeBST(TreeNode<int>* n, int &dPtr, char* addr){
-     // modify with visit function
-     
-     int temp = n->getData();
-     serializeInt(temp, dPtr, addr);
+     if (n == 0) return;
+     serializeBST(n->getLeft(), dPtr, addr);
+     serializeInt(n->getData(), dPtr, addr);
+     serializeBST(n->getRight(), dPtr, addr);
  }
 
 
@@ -122,7 +122,6 @@ void Faculty::serializeInt(int x, int &dPtr, char *d){
              
              advisees.insert(temp);
          }
-         
      }
      catch(std::exception e){
          return false;
@@ -147,12 +146,4 @@ std::string Faculty::toString(){
     i << ID;
     std::string temp = "ID: " + i.str() + "\nName: " + name + "\nDepartment: " + department + "\nLevel: " + level;
     return temp;
-}
-
-
-bool Faculty::addAvisee(){
-    ++numAdvisees;
-    
-    // add to BST
-    return false;
 }
