@@ -28,12 +28,14 @@ void DatabaseUI::menu() {
 }
 
 void DatabaseUI::showAllStudents() {
-	db->printAllStu();
+	if (!db->printAllStu())
+		cout << "No students..." << endl << endl;
 	pause("Press ENTER to continue...");
 }
 
 void DatabaseUI::showAllFaculty() {
-	db->printAllFac();
+	if (!db->printAllFac())
+		cout << "No faculty members..." << endl << endl;
 	pause("Press ENTER to continue...");
 }
 
@@ -82,11 +84,11 @@ void DatabaseUI::addStudent() {
 	if (lowerCase(choice) == 'y') {
 		advisor = getInt("Advisor ID: ");
 		while (db->fTree.find(Faculty(advisor)) == 0) {
-			cout << "There is no faculty with an ID of: " + advisor << endl;
-			choice = getChar("Would you like to add a faculty? (y/n/)\n");
+			cout << "There is no faculty with an ID of: " << advisor << endl;
+			choice = getChar("Would you like to add a faculty? (y/n)\n");
 			if (lowerCase(choice) == 'y') {
 				addFaculty();
-				cout << "(Returning to the add student form...)";
+				cout << "(Returning to the add student form...)\n";
 			}
 			advisor = getInt("Advisor ID: ");
 		}
@@ -96,8 +98,8 @@ void DatabaseUI::addStudent() {
 	db->addStu(s);
 	db->changeAdvisor(id, advisor);
 	history->insertedStudent(s);
-	cout << "Student has been added." << endl;
-	s.toString();
+	cout << "\nSTUDENT HAS BEEN ADDED" << endl;
+	cout << s.toString() << endl << endl;
 	pause("Press ENTER to continue...");
 }
 
@@ -110,7 +112,8 @@ void DatabaseUI::addFaculty() {
 	Faculty f(db->autoFacID(), name, level, department);
 	db->addFac(f);
 	history->insertedFaculty(f);
-	cout << "Faculty has been added." << endl;
+	cout << "\nFACULTY HAS BEEN ADDED" << endl;
+	cout << f.toString() << endl << endl;
 	pause("Press ENTER to continue...");
 }
 
