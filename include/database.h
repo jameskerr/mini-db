@@ -80,6 +80,7 @@ private:
     bool printStuForTable(TreeNode<Student>* s);
     bool printFacForTable(TreeNode<Faculty>* f);
     void pPrintAdvisees(TreeNode<int>* n);
+    void advisorToZero(TreeNode<int>* n);
     
     // File IO
     void initializeFiles();

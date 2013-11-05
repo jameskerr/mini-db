@@ -122,17 +122,29 @@ void DatabaseUI::changeAdvisor() {
 	int stu = getInt("Student ID: ");
 	int fac = getInt("New faculty advisor ID: ");
 	if (!db->changeAdvisor(stu, fac)) {
-		cout << "Error.  Student ID or Faculty ID do not exist.";
+		cout << "Error.  Student ID or Faculty ID do not exist." << endl;
 	} else
 	cout << "Student #" << stu << " now has faculty #" << fac << " as his/her advisor." << endl;
 	pause("Press ENTER to continue...");
 }
 
 void DatabaseUI::deleteStudent() {
+    int stu = getInt("Student ID: ");
+    if (!db->deleteStu(Student(stu)))
+        cout << "Student does not exist." << endl;
+    else{
+        cout << "Student #" << stu << " has been deleted." << endl;
+    }
 	pause("Press ENTER to continue...");
 }
 
 void DatabaseUI::deleteFaculty() {
+    int fac = getInt("Faculty ID: ");
+    if (!db->deleteFac(Faculty(fac)))
+        cout << "Faculty does not exist." << endl;
+    else{
+        cout << "Faculty #" << fac << " has been deleted." << endl;
+    }
 	pause("Press ENTER to continue...");
 }
 

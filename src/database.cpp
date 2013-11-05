@@ -112,7 +112,7 @@ bool Database::printAdvisees(int id){
     if (node == 0) return false;
     if (node->getDataPtr()->getNumAdvisees() == 0){
         cout << "This faculty member has no advisees." << endl << endl;
-        return false;
+        return true;
     }
     int width = 13;
     cout << "ID"
@@ -134,10 +134,18 @@ void Database::pPrintAdvisees(TreeNode<int>* node){
 
 bool Database::addStu(Student t){
     sTree.insert(t);
+    
+    if (t.getAdvisor() != 0){
+        fTree.find(Faculty(t.getAdvisor()))->getDataPtr()->addAdvisee(t.getID());
+    }
+    
     return true;
 }
 
 bool Database::deleteStu(Student t){
+    TreeNode<Student>* s = sTree.find(t);
+    if (s == 0) return false;
+    fTree.find(Faculty(s->getDataPtr()->getAdvisor()))->getDataPtr()->getAdvisees()->remove(t.getID());
     return sTree.remove(t);
 }
 
@@ -147,16 +155,28 @@ bool Database::addFac(Faculty t){
 }
     
 bool Database::deleteFac(Faculty t){
+    TreeNode<Faculty>* f = fTree.find(t);
+    
+    if (f == 0) return false;
+    
+    advisorToZero(f->getDataPtr()->getAdvisees()->getRoot());
+    
     return fTree.remove(t);
+}
+
+void Database::advisorToZero(TreeNode<int>* n){
+    advisorToZero(n->getLeft());
+    *(n->getDataPtr()) = 0;
+    advisorToZero(n->getRight());
 }
 
 bool Database::changeAdvisor(int sId, int fId){
     TreeNode<Student>* sNode = sTree.find(Student(sId));
     TreeNode<Faculty>* fNode = fTree.find(Faculty(fId));
     // Get student's current advisor
+    if (sNode != 0){
     TreeNode<Faculty>* oldFac = fTree.find(Faculty(sNode->getData().getAdvisor()));
-    if (fNode != 0){
-        if(sNode != 0){
+        if(fNode != 0){
             // Add new advisor to student
             sNode->getDataPtr()->setAdvisor(fId);
             
@@ -173,6 +193,9 @@ bool Database::changeAdvisor(int sId, int fId){
     return false;
     
 }
+
+
+
 bool Database::removeAdvisee(int fId, int sId){
     TreeNode<Faculty>* fNode = fTree.find(Faculty(fId));
     TreeNode<Student>* sNode = sTree.find(Student(sId));

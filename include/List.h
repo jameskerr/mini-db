@@ -9,7 +9,7 @@
 template <class T>
 class List: public IList<T> {
 public:
-	List():front(0) :back(0) {}
+	List():front(0), back(0) {}
 	virtual ~List() {}
 
 	void addToBack(T data);
