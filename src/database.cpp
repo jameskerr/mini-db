@@ -166,10 +166,10 @@ bool Database::removeAdvisee(int fId, int sId){
     TreeNode<Faculty>* fNode = fTree.find(Faculty(fId));
     TreeNode<Student>* sNode = sTree.find(Student(sId));
     if(fNode != 0){
-        fNode->getData().getAdvisees()->remove(sId);
+        fNode->getDataPtr()->getAdvisees()->remove(sId);
         if (sNode != 0) {
             // Set student advisor to empty
-            sNode->getData().setAdvisor(0);
+            sNode->getDataPtr()->setAdvisor(0);
         }
         
         return true;
@@ -270,34 +270,26 @@ bool Database::save(){
     // SAVE STUDENT FILE
     {
         std::fstream sFile;
-        sFile.open(stuFile.c_str(), std::ios::in|std::ios::out|std::ios::binary|std::ios::app);
+        sFile.open(stuFile.c_str(), std::ios::in|std::ios::out|std::ios::binary|std::ios::trunc);
         int numS = getNumStu();
-        int sSize = sizeof(sTree);
-        char sBuffer[sSize + 8];
-        int buffPtr = 0;
         
         // Load student table into buffer
         // This function will save the number of students to the buffer first
-        serializeInt(numS, buffPtr, sBuffer);
-        serializeInt(nextStuID, buffPtr, sBuffer);
-        stuSerialize(sTree.getRoot(), buffPtr, sBuffer);
-        sFile.write(sBuffer, buffPtr);
+        serializeInt(numS, sFile);
+        serializeInt(nextStuID, sFile);
+        stuSerialize(sTree.getRoot(), sFile);
         sFile.close();
     }
     // SAVE FACULTY TABLE
     {
         std::fstream fFile;
-        fFile.open(facFile.c_str(), std::ios::in|std::ios::out|std::ios::binary|std::ios::app);
+        fFile.open(facFile.c_str(), std::ios::in|std::ios::out|std::ios::binary|std::ios::trunc);
         int numF = getNumFac();
-        int fSize = sizeof(fTree);
-        char fBuffer[fSize + 8];
-        buffPtr = 0;
+        
         // Load faculty table into buffer
-        serializeInt(numF, buffPtr, fBuffer);
-        serializeInt(nextFacID, buffPtr, fBuffer);
-        facSerialize(fTree.getRoot(), buffPtr, fBuffer);
-        // Save buffer to file
-        fFile.write(fBuffer, buffPtr);
+        serializeInt(numF, fFile);
+        serializeInt(nextFacID, fFile);
+        facSerialize(fTree.getRoot(), fFile);
         fFile.close();
     }
     
@@ -313,24 +305,32 @@ int Database::deserializeInt(int &dPtr, char *d){
     return x;
 }
 
-void Database::serializeInt(int x, int &dPtr, char *d){
-    d[dPtr++] = (x >> 24) & 0xFF;
-    d[dPtr++] = (x >> 16) & 0xFF;
-    d[dPtr++] = (x >> 8) & 0xFF;
-    d[dPtr++] = x & 0xFF;
+void Database::serializeInt(int x, std::fstream &file){
+    
+    char temp[4];
+    temp[0] = (x >> 24) & 0xFF;
+    temp[1] = (x >> 16) & 0xFF;
+    temp[2] = (x >> 8) & 0xFF;
+    temp[3] = x & 0xFF;
+    
+    if(file.is_open()){
+        file.write(temp, 4);
+    }
 }
 
-void Database::stuSerialize(TreeNode<Student>* s, int &dPtr, char *d){
+void Database::stuSerialize(TreeNode<Student>* s, std::fstream &file){
     if (s == 0) return;
-    stuSerialize(s->getLeft(), dPtr, d);
-    s->getData().serialize(d, dPtr);
-    stuSerialize(s->getRight(), dPtr, d);
+    
+    stuSerialize(s->getLeft(), file);
+    s->getData().serialize(file);
+    stuSerialize(s->getRight(), file);
 }
-void Database::facSerialize(TreeNode<Faculty>* f, int &dPtr, char *d){
+void Database::facSerialize(TreeNode<Faculty>* f, std::fstream &file){
     if (f == 0) return;
-    facSerialize(f->getLeft(), dPtr, d);
-    f->getData().serialize(d, dPtr);
-    facSerialize(f->getRight(), dPtr, d);
+    
+    facSerialize(f->getLeft(), file);
+    f->getDataPtr()->serialize(file);
+    facSerialize(f->getRight(), file);
 }
 
 

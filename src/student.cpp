@@ -6,6 +6,7 @@
 
 #include "student.h"
 #include <sstream>
+#include <fstream>
 
 Student::Student(){
     this->ID = 0;
@@ -43,31 +44,36 @@ bool Student::operator != (const Student& other) {
 }
 
 //Serialization/Deserialization operators
-bool Student::serialize (char* addr, int &dPtr){
+bool Student::serialize (std::fstream &file){
     try{
+        
+        char temp[8];
+        
         // copy ID into char array
-        addr[dPtr++] = (ID >> 24) & 0xFF;
-        addr[dPtr++] = (ID >> 16) & 0xFF;
-        addr[dPtr++] = (ID >> 8) & 0xFF;
-        addr[dPtr++] = ID & 0xFF;
+        temp[0] = (ID >> 24) & 0xFF;
+        temp[1] = (ID >> 16) & 0xFF;
+        temp[2] = (ID >> 8) & 0xFF;
+        temp[3] = ID & 0xFF;
         
         // copy Advisor into char array
-        addr[dPtr++] = (advisor >> 24) & 0xFF;
-        addr[dPtr++] = (advisor >> 16) & 0xFF;
-        addr[dPtr++] = (advisor >> 8) & 0xFF;
-        addr[dPtr++] = advisor & 0xFF;
+        temp[4] = (advisor >> 24) & 0xFF;
+        temp[5] = (advisor >> 16) & 0xFF;
+        temp[6] = (advisor >> 8) & 0xFF;
+        temp[7] = advisor & 0xFF;
         
         // Load GPA into char array
-        char temp[8];
-        memcpy(&temp, &GPA, sizeof(double));
-        for(int i = 0; i < 8; ++i){
-            addr[dPtr++] = *(temp + i);
+        char temp2[8];
+        memcpy(&temp2, &GPA, sizeof(double));
+        
+        if (file.is_open()){
+            file.write(temp, 8);
+            file.write(temp2, 8);
         }
         
         // Load each string field into char array
-        storeStr(name, dPtr, addr);
-        storeStr(level, dPtr, addr);
-        storeStr(major, dPtr, addr);
+        storeStr(name, file);
+        storeStr(level, file);
+        storeStr(major, file);
         
         
     }
@@ -76,16 +82,13 @@ bool Student::serialize (char* addr, int &dPtr){
     }
     return true;
 }
-void Student::storeStr(string str, int &dPtr, char *d){
+void Student::storeStr(string str, std::fstream &file){
     
     const char* s = str.c_str();
     
-    for(int i = 0; i < str.length(); ++i){
-        d[dPtr] = s[i];
-        dPtr++;
+    if (file.is_open()) {
+        file.write(s, str.length() + 1);
     }
-    d[dPtr] = '\0';
-    dPtr++;
 }
 
 

@@ -34,7 +34,7 @@ public:
     bool operator != (const Student& other);
     
     //Serialization/Deserialization operators
-    bool serialize (char* addr, int &dPtr);
+    bool serialize (std::fstream &file);
     bool deserialize (char* addr, int &dPtr);
     
     //Methods
@@ -58,7 +58,7 @@ private:
     string major;
     
     // Serialization helper functions
-    void storeStr(string str, int &dPtr, char *d);
+    void storeStr(string str, std::fstream &file);
     string getStr(int &dPtr, char *d);
 };
 

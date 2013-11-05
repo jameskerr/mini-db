@@ -6,6 +6,7 @@
 
 #include "Faculty.h"
 #include "sstream"
+#include <fstream>
 
 Faculty::Faculty(){
     this->ID = 0;
@@ -52,21 +53,21 @@ bool Faculty::operator != (const Faculty& other) {
 }
 
 //Serialization/Deserialization operators
-bool Faculty::serialize (char* addr, int &dPtr){
+bool Faculty::serialize (std::fstream &file){
      try{
          // copy ID into char array
-         serializeInt(ID, dPtr, addr);
+         serializeInt(ID, file);
         
          // Load each string field into char array
-         storeStr(name, dPtr, addr);
-         storeStr(level, dPtr, addr);
-         storeStr(department, dPtr, addr);
+         storeStr(name, file);
+         storeStr(level, file);
+         storeStr(department, file);
         
          // Serialize numAdvisees
-         serializeInt(getNumAdvisees(), dPtr, addr);
+         serializeInt(getNumAdvisees(), file);
          
          // Serialize BST
-         serializeBST(advisees.getRoot(), dPtr, addr);
+         serializeBST(advisees.getRoot(), file);
         
      }
      catch(std::exception e){
@@ -74,30 +75,32 @@ bool Faculty::serialize (char* addr, int &dPtr){
      }
      return true;
  }
- void Faculty::storeStr(string str, int &dPtr, char *d){
+ void Faculty::storeStr(string str, std::fstream &file){
     
      const char* s = str.c_str();
-    
-     for(int i = 0; i < str.length(); ++i){
-         d[dPtr] = s[i];
-         dPtr++;
+     
+     if (file.is_open()) {
+         file.write(s, str.length() + 1);
      }
-     d[dPtr] = '\0';
-     dPtr++;
  }
 
-void Faculty::serializeInt(int x, int &dPtr, char *d){
-     d[dPtr++] = (x >> 24) & 0xFF;
-     d[dPtr++] = (x >> 16) & 0xFF;
-     d[dPtr++] = (x >> 8) & 0xFF;
-     d[dPtr++] = x & 0xFF;
+void Faculty::serializeInt(int x, std::fstream &file){
+    char temp[4];
+    temp[0] = (x >> 24) & 0xFF;
+    temp[1] = (x >> 16) & 0xFF;
+    temp[2] = (x >> 8) & 0xFF;
+    temp[3] = x & 0xFF;
+    
+    if(file.is_open()){
+        file.write(temp, 4);
+    }
  }
 
- void Faculty::serializeBST(TreeNode<int>* n, int &dPtr, char* addr){
+ void Faculty::serializeBST(TreeNode<int>* n, std::fstream &file){
      if (n == 0) return;
-     serializeBST(n->getLeft(), dPtr, addr);
-     serializeInt(n->getData(), dPtr, addr);
-     serializeBST(n->getRight(), dPtr, addr);
+     serializeBST(n->getLeft(), file);
+     serializeInt(n->getData(), file);
+     serializeBST(n->getRight(), file);
  }
 
 

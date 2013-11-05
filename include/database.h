@@ -88,9 +88,9 @@ private:
     const std::string stuFile;
     const std::string facFile;
     int deserializeInt(int &dPtr, char *d);
-    void serializeInt(int x, int &dPtr, char *d);
-    void stuSerialize(TreeNode<Student>* s, int &dPtr, char *d);
-    void facSerialize(TreeNode<Faculty>* f, int &dPtr, char *d);
+    void serializeInt(int x, std::fstream &file);
+    void stuSerialize(TreeNode<Student>* s, std::fstream &file);
+    void facSerialize(TreeNode<Faculty>* f, std::fstream &file);
 };
 
 #endif
