@@ -49,6 +49,7 @@ void Database::pPrintAllStu(TreeNode<Student>* s) {
 }
 
 bool Database::printAllFac(){
+    
     if (getNumFac() == 0) return false;
     int width = 13;
     cout << "ALL FACULTY:" << endl;
