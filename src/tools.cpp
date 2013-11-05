@@ -3,11 +3,14 @@
 
 #include"tools.h"
 
+#include <stdlib.h>
 #include<string>
 #include<iostream>
 #include<fstream>
 #include<sstream>
 #include<time.h>
+#include <climits>
+
 using namespace std;
 
 const string WHITESPACE = " \t\n\r";

@@ -30,41 +30,44 @@ void DatabaseUI::menu() {
 void DatabaseUI::showAllStudents() {
 	if (!db->printAllStu())
 		cout << "No students..." << endl << endl;
-	pause("Press ENTER to continue...");
+	pause("\nPress ENTER to continue...");
 }
 
 void DatabaseUI::showAllFaculty() {
 	if (!db->printAllFac())
 		cout << "No faculty members..." << endl << endl;
-	pause("Press ENTER to continue...");
+	pause("\nPress ENTER to continue...");
 }
 
 void DatabaseUI::showStudent() {
+	cout << "SHOW A STUDENT" << endl;
 	int id = getInt("Student ID: ");
 	if (!db->printStu(id))
 		cout << "There is no student with that ID." << endl;
-	pause("Press ENTER to continue...");
+	pause("\nPress ENTER to continue...");
 }
 
 void DatabaseUI::showFaculty() {
+	cout << "SHOW A FACULTY" << endl;
 	int id = getInt("Faculty ID: ");
 	if (!db->printFac(id))
 		cout << "There is no faculty with that ID." << endl;
-	pause("Press ENTER to continue...");
+	pause("\nPress ENTER to continue...");
 }
 
 void DatabaseUI::showAdvisor() {
+	cout << "SHOW A STUDENT'S ADVISOR" << endl;
 	int id = getInt("Student ID: ");
 	if (!db->printAdvisor(id))
 		cout << "There is no student with that ID." << endl;
-	pause("Press ENTER to continue...");
+	pause("\nPress ENTER to continue...");
 }
 
 void DatabaseUI::showAdvisees() {
 	int id = getInt("Faculty ID: ");
 	if (!db->printAdvisees(id))
 		cout << "There is no faculty with that ID." << endl;
-	pause("Press ENTER to continue...");
+	pause("\nPress ENTER to continue...");
 }
 
 void DatabaseUI::addStudent() {
@@ -100,7 +103,7 @@ void DatabaseUI::addStudent() {
 	history->insertedStudent(s);
 	cout << "\nSTUDENT HAS BEEN ADDED" << endl;
 	cout << s.toString() << endl << endl;
-	pause("Press ENTER to continue...");
+	pause("\nPress ENTER to continue...");
 }
 
 void DatabaseUI::addFaculty() {
@@ -115,20 +118,22 @@ void DatabaseUI::addFaculty() {
 	history->insertedFaculty(f);
 	cout << "\nFACULTY HAS BEEN ADDED" << endl;
 	cout << f.toString() << endl << endl;
-	pause("Press ENTER to continue...");
+	pause("\nPress ENTER to continue...");
 }
 
 void DatabaseUI::changeAdvisor() {
+	cout << "CHANGE A STUDENT'S ADVISOR" << endl;
 	int stu = getInt("Student ID: ");
 	int fac = getInt("New faculty advisor ID: ");
 	if (!db->changeAdvisor(stu, fac)) {
 		cout << "Error.  Student ID or Faculty ID do not exist." << endl;
 	} else
 	cout << "Student #" << stu << " now has faculty #" << fac << " as his/her advisor." << endl;
-	pause("Press ENTER to continue...");
+	pause("\nPress ENTER to continue...");
 }
 
 void DatabaseUI::deleteStudent() {
+    cout << "DELETE A STUDENT" << endl;
     int stu = getInt("Student ID: ");
     TreeNode<Student>* sNode = db->sTree.find(Student(stu));
     if (sNode == 0)
@@ -138,10 +143,11 @@ void DatabaseUI::deleteStudent() {
         db->deleteStu(Student(stu));
         cout << "Student #" << stu << " has been deleted." << endl;
     }
-	pause("Press ENTER to continue...");
+	pause("\nPress ENTER to continue...");
 }
 
 void DatabaseUI::deleteFaculty() {
+    cout << "DELETE A FACULTY" << endl;
     int fac = getInt("Faculty ID: ");
     TreeNode<Faculty>* fNode = db->fTree.find(Faculty(fac));
     if (fNode == 0){
@@ -152,19 +158,25 @@ void DatabaseUI::deleteFaculty() {
         db->deleteFac(Faculty(fac));
         cout << "Faculty #" << fac << " has been deleted." << endl;
     }
-	pause("Press ENTER to continue...");
+	pause("\nPress ENTER to continue...");
 }
 
 void DatabaseUI::removeAdvisee() {
+	cout << "REMOVE AN ADVISEE FROM A FACULTY" << endl;
 	int stu = getInt("Student ID: ");
 	int fac = getInt("Faculty ID: ");
-	if (!db->removeAdvisee(fac, stu))
+	if (!db->removeAdvisee(fac, stu)) {
 		cout << "Error.  Student ID or Faculty ID do not exist." << endl;
-	pause("Press ENTER to continue...");
+	} else {
+		history->removedAdvisee(fac, stu);
+		cout << "Removed student #" << stu << " from faculty #" << fac << endl;
+	}
+		
+	pause("\nPress ENTER to continue...");
 }
 
 void DatabaseUI::rollback() {
 	int steps = getInt("Number of steps to reverse: ");
 	history->rollback(steps);
-	pause("Press ENTER to continue...");
+	pause("\nPress ENTER to continue...");
 }

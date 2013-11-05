@@ -13,6 +13,7 @@ public:
 	void removedStudent(Student student);
 	void insertedFaculty(Faculty faculty);
 	void removedFaculty(Faculty faculty);
+	void removedAdvisee(int facID, int stuID);
 
 private:
 	Database* db;
