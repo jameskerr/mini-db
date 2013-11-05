@@ -17,6 +17,13 @@ class Student{
 public:
     Student();
     Student(int Id): ID(Id) {}
+    Student(const Student &t): // copy constructor
+        ID(t.ID),
+        advisor(t.advisor),
+        GPA(t.GPA),
+        name(t.name),
+        level(t.level),
+        major(t.major) {}
     Student(int Id, int adv, double g, string n, string l, string m);
     virtual ~Student();
     

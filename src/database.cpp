@@ -93,11 +93,11 @@ bool Database::printFac(int id){
 bool Database::printFacForTable(TreeNode<Faculty>* f) {
     if (f == 0) return false;
     int width = 13;
-    cout << f->getData().getID() 
-         << std::setw(width) << f->getData().getName()
-         << std::setw(width) << f->getData().getLevel()
-         << std::setw(width) << f->getData().getDepartment()
-         << std::setw(width) << f->getData().getNumAdvisees() << endl;
+    cout << f->getDataPtr()->getID()
+         << std::setw(width) << f->getDataPtr()->getName()
+         << std::setw(width) << f->getDataPtr()->getLevel()
+         << std::setw(width) << f->getDataPtr()->getDepartment()
+         << std::setw(width) << f->getDataPtr()->getNumAdvisees() << endl;
     return true;
 }
 bool Database::printAdvisor(int id){
@@ -121,7 +121,8 @@ void Database::pPrintAdvisees(TreeNode<int>* node){
 }
 
 bool Database::addStu(Student t){
-    return sTree.insert(t);
+    sTree.insert(t);
+    return true;
 }
 
 bool Database::deleteStu(Student t){
@@ -129,7 +130,8 @@ bool Database::deleteStu(Student t){
 }
 
 bool Database::addFac(Faculty t){
-    return fTree.insert(t);
+    fTree.insert(t);
+    return true;
 }
     
 bool Database::deleteFac(Faculty t){
@@ -144,10 +146,10 @@ bool Database::changeAdvisor(int sId, int fId){
     if (fNode != 0){
         if(sNode != 0){
             // Add new advisor to student
-            sNode->getData().setAdvisor(fId);
+            sNode->getDataPtr()->setAdvisor(fId);
             
             // Add student to advisee list
-            fNode->getData().getAdvisees()->insert(sId);
+            fNode->getDataPtr()->getAdvisees()->insert(sId);
             
             // Delete student from old advisor
             if (oldFac != 0) {
@@ -166,7 +168,7 @@ bool Database::removeAdvisee(int fId, int sId){
         fNode->getData().getAdvisees()->remove(sId);
         if (sNode != 0) {
             // Set student advisor to empty
-            sNode->getData().setAvisor(0);
+            sNode->getData().setAdvisor(0);
         }
         
         return true;
@@ -209,6 +211,9 @@ bool Database::removeAdvisee(int fId, int sId){
              numEntries = deserializeInt(buffPtr, sData);
              nextStuID = deserializeInt(buffPtr, sData);
          }
+         
+         // DELETE
+         cout << endl << endl << "NUM STUDENTS: " << numEntries << endl << endl;
          
          for(int i = 0; i <= numEntries; ++i){
              Student t;
@@ -272,6 +277,7 @@ bool Database::save(){
         int sSize = sizeof(sTree);
         char sBuffer[sSize + 8];
         int buffPtr = 0;
+        
         // Load student table into buffer
         // This function will save the number of students to the buffer first
         serializeInt(numS, buffPtr, sBuffer);

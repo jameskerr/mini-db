@@ -19,6 +19,12 @@ class Faculty{
 public:
     Faculty();
     Faculty(int Id) :ID(Id) {}
+    Faculty(const Faculty &t): // copy constructor
+        ID(t.ID),
+        name(t.name),
+        level(t.level),
+        department(t.department),
+        advisees(t.advisees) {}
     Faculty(int Id, string n, string l, string d);
     virtual ~Faculty();
     
