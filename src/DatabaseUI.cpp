@@ -29,34 +29,40 @@ void DatabaseUI::menu() {
 
 void DatabaseUI::showAllStudents() {
 	db->printAllStu();
+	pause("Press ENTER to continue...");
 }
 
 void DatabaseUI::showAllFaculty() {
 	db->printAllFac();
+	pause("Press ENTER to continue...");
 }
 
 void DatabaseUI::showStudent() {
 	int id = getInt("Student ID: ");
 	if (!db->printStu(id))
 		cout << "There is no student with that ID." << endl;
+	pause("Press ENTER to continue...");
 }
 
 void DatabaseUI::showFaculty() {
 	int id = getInt("Faculty ID: ");
 	if (!db->printFac(id))
 		cout << "There is no faculty with that ID." << endl;
+	pause("Press ENTER to continue...");
 }
 
 void DatabaseUI::showAdvisor() {
 	int id = getInt("Student ID: ");
 	if (!db->printAdvisor(id))
 		cout << "There is no student with that ID." << endl;
+	pause("Press ENTER to continue...");
 }
 
 void DatabaseUI::showAdvisees() {
 	int id = getInt("Faculty ID: ");
 	if (!db->printAdvisor(id))
 		cout << "There is no faculty with that ID." << endl;
+	pause("Press ENTER to continue...");
 }
 
 void DatabaseUI::addStudent() {
@@ -69,20 +75,34 @@ void DatabaseUI::addStudent() {
 		cout << "GPA must be between 0.0 and 4.0." << endl;
 		gpa = getDouble("GPA: ");	
 	}
-
-	int advisor = getInt("Advisor ID: ");
-	while (db->fTree.find(Faculty(advisor)) != 0) {
-		cout << "There is no advisory with an ID of: " + advisor << endl;
+	
+	int advisor = 0;
+	// Ask if they want to add the advisor
+	char choice = getChar("Would you like to add an advisor? (y/n)\n");
+	if (lowerCase(choice) == 'y') {
 		advisor = getInt("Advisor ID: ");
+		while (db->fTree.find(Faculty(advisor)) == 0) {
+			cout << "There is no faculty with an ID of: " + advisor << endl;
+			choice = getChar("Would you like to add a faculty? (y/n/)\n");
+			if (lowerCase(choice) == 'y') {
+				addFaculty();
+				cout << "(Returning to the add student form...)";
+			}
+			advisor = getInt("Advisor ID: ");
+		}
 	}
-	Student s(db->autoStuID(), advisor, gpa, name, level, major);
+	int id = db->autoStuID();
+	Student s(id, advisor, gpa, name, level, major);
 	db->addStu(s);
+	db->changeAdvisor(id, advisor);
 	history->insertedStudent(s);
 	cout << "Student has been added." << endl;
+	s.toString();
+	pause("Press ENTER to continue...");
 }
 
 void DatabaseUI::addFaculty() {
-	cout << "ADD NEW Faculty" << endl;
+	cout << "ADD NEW FACULTY" << endl;
 	string name = getString("Name: ");
 	string level = getString("Level: ");
 	string department = getString("Department: ");
@@ -91,6 +111,7 @@ void DatabaseUI::addFaculty() {
 	db->addFac(f);
 	history->insertedFaculty(f);
 	cout << "Faculty has been added." << endl;
+	pause("Press ENTER to continue...");
 }
 
 void DatabaseUI::changeAdvisor() {
@@ -100,20 +121,21 @@ void DatabaseUI::changeAdvisor() {
 		cout << "Error.  Student ID or Faculty ID do not exist.";
 	} else
 	cout << "Student #" << stu << " now has faculty #" << fac << " as his/her advisor." << endl;
+	pause("Press ENTER to continue...");
 }
 
 void DatabaseUI::deleteStudent() {
-
+	pause("Press ENTER to continue...");
 }
 
 void DatabaseUI::deleteFaculty() {
-
+	pause("Press ENTER to continue...");
 }
 
 void DatabaseUI::removeAdvisee() {
-
+	pause("Press ENTER to continue...");
 }
 
-void rollback() {
-
+void DatabaseUI::rollback() {
+	pause("Press ENTER to continue...");
 }
