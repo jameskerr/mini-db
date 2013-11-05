@@ -23,4 +23,5 @@ void UndoRedo::insertedFaculty(Faculty faculty) {
 }
 void UndoRedo::removedFaculty(Faculty faculty) {
 	ICommand* cmd = new RemoveFacultyCommand(db, faculty);
+	undo_commands.push(cmd);
 }

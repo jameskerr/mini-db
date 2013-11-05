@@ -48,8 +48,7 @@ BST<T>::~BST() {
 
 template <class T>
 BST<T>::BST(const BST<T>& source) {
-	root = new TreeNode<T>(source.root->data, pCopy(source.root->left), pCopy(source.root->right));
-	size = source.size;
+	this = source;
 }
 
 template <class T>
