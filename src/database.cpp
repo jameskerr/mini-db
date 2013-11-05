@@ -26,7 +26,8 @@ Database::~Database(){
 }
 
 
-void Database::printAllStu(){
+bool Database::printAllStu(){
+    if (getNumStu() == 0) return false;
      int width = 13;
      cout << "ALL STUDENTS:" << endl;
      cout << "ID" 
@@ -37,16 +38,28 @@ void Database::printAllStu(){
          << std::setw(width) << "Advisor" << endl;
      TreeNode<Student>* cursor = sTree.getRoot();
      pPrintAllStu(cursor);
+    return true;
 }
+
 void Database::pPrintAllStu(TreeNode<Student>* s) {
     if (s == 0) return;
     pPrintAllStu(s->getLeft());
     printStuForTable(s);
     pPrintAllStu(s->getRight());
 }
+
 bool Database::printAllFac(){
-    
-    return false;
+    if (getNumFac() == 0) return false;
+    int width = 13;
+    cout << "ALL FACULTY:" << endl;
+    cout << "ID"
+        << std::setw(width) << "Name"
+        << std::setw(width) << "Level"
+        << std::setw(width) << "Department"
+        << std::setw(width) << "Advisees" << endl;
+    TreeNode<Faculty>* cursor = fTree.getRoot();
+    pPrintAllFac(cursor);
+    return true;
 }
 void Database::pPrintAllFac(TreeNode<Faculty>* f) {
     if (f == 0) return;
@@ -90,33 +103,30 @@ bool Database::printFacForTable(TreeNode<Faculty>* f) {
 bool Database::printAdvisor(int id){
     TreeNode<Student>* node = sTree.find(Student(id));
     if (node == 0) return false;
-    cout << node->getData().getAdvisor() << endl << endl;
+    cout << fTree.find(node->getData().getAdvisor())->getData().toString() << endl << endl;
     return true;
 }
 bool Database::printAdvisees(int id){
     TreeNode<Faculty>* node = fTree.find(Faculty(id));
     if (node == 0) return false;
-    //cout << node->getData().getAdvisees() << endl;
-    /*
-    cout << "FACULTY ADVISOR:" << endl << endl;
-    cout << node -> getData().toString();
-    cout << LIST OF ADVISEES:" << endl << endl;
-     
-    // I'm not sure where the function parameter can come from
-     // for the visit function, but I'd be nice if this worked
-    node->getAdvisees().visit(node->getAdvisees()->getRoot(), printStu())
-     
-     // We might want 'printStuForTable function'. This was my original idea, but I don't know anymore
-     
-    */
+    pPrintAdvisees(node->getData().getAdvisees()->getRoot());
     return true;
 }
+
+void pPrintAdvisees(TreeNode<int>* node){
+    if (node == 0) return;
+    pPrintAdvisees(node->getLeft());
+    cout << sTree.find(node->getData()).getData().toString() << endl << endl;
+    pPrintAdvisees(node->getRight());
+}
+
 bool Database::addStu(Student t){
     
     if (sTree.find(t))
         return false;
     else{
         sTree.insert(t);
+        ++nextStuID;
     }
     return true;
 }
@@ -128,6 +138,7 @@ bool Database::addFac(Faculty t){
         return false;
     else {
         fTree.insert(t);
+        ++nextFacID;
     }
     return true;
 }

@@ -74,6 +74,11 @@ private:
     //Methods
     int getNumStu();
     int getNumFac();
+    void pPrintAllStu(TreeNode<Student>* s);
+    void pPrintAllFac(TreeNode<Faculty>* f);
+    bool printStuForTable(TreeNode<Student>* s);
+    bool printFacForTable(TreeNode<Faculty>* f);
+    void pPrintAdvisees(TreeNode<int>* n);
     
     // File IO
     void initializeFiles();
