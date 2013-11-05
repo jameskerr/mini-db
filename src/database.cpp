@@ -193,8 +193,7 @@ bool Database::removeAdvisee(int fId, int sId){
      
      // See if student file exists in current directory, if not, make it
      if(!checkFiles(stuFile)){
-         sFile.open(stuFile.c_str(), std::ios::in|std::ios::out|std::ios::binary|std::ios::trunc);
-         std::cout<<"Student file not found. Creating file."<<endl;
+         std::cout<<"Student file not found. File will be created."<<endl;
      }
      else{
 
@@ -230,8 +229,7 @@ bool Database::removeAdvisee(int fId, int sId){
     
      // See if faculty file exists in current directory, if not, make it
      if (!checkFiles(facFile)) {
-         fFile.open(facFile.c_str(), std::ios::in|std::ios::out|std::ios::binary|std::ios::trunc);
-         std::cout<<"Faculty file not found. Creating file."<<endl;
+         std::cout<<"Faculty file not found. Files will be created."<<endl;
      }
      else{
          std::cout<<"Faculty file found. Reading contents into database."<<endl;
