@@ -130,10 +130,12 @@ void DatabaseUI::changeAdvisor() {
 
 void DatabaseUI::deleteStudent() {
     int stu = getInt("Student ID: ");
-    if (!db->deleteStu(Student(stu)))
+    TreeNode<Student>* sNode = db->sTree.find(Student(stu));
+    if (sNode == 0)
         cout << "Student does not exist." << endl;
     else{
-        history->removedStudent(db->sTree.find(Student(stu))->getData());
+        history->removedStudent(sNode->getData());
+        db->deleteStu(Student(stu));
         cout << "Student #" << stu << " has been deleted." << endl;
     }
 	pause("Press ENTER to continue...");
@@ -141,10 +143,13 @@ void DatabaseUI::deleteStudent() {
 
 void DatabaseUI::deleteFaculty() {
     int fac = getInt("Faculty ID: ");
-    if (!db->deleteFac(Faculty(fac)))
+    TreeNode<Faculty>* fNode = db->fTree.find(Faculty(fac));
+    if (fNode == 0){
         cout << "Faculty does not exist." << endl;
+    }
     else{
-        history->removedFaculty(db->fTree.find(Faculty(fac))->getData());
+        history->removedFaculty(fNode->getData());
+        db->deleteFac(Faculty(fac));
         cout << "Faculty #" << fac << " has been deleted." << endl;
     }
 	pause("Press ENTER to continue...");

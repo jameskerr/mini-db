@@ -2,7 +2,13 @@
 //  database.cpp
 //  Reed Halberg
 //  James Kerr
-//
+/*
+ 
+This class contains the two trees for students and faculty and manages the correspnding operations.
+It will read the databse in from files upon startup and out to files upon closing.
+It allows entries to be added, removed, reorganized, and displayed to the user.
+
+*/
 
 #include "Database.h"
 #include "dirent.h"
@@ -18,6 +24,7 @@ Database::Database()
     stuFile("studentTable.kh"),
     facFile("facultyTable.kh")
 {
+    // Load data from files if they exist
     initializeFiles();
 }
 
@@ -25,10 +32,10 @@ Database::~Database(){
     
 }
 
-
+// Displays all students in the database in a table
 bool Database::printAllStu(){
     if (getNumStu() == 0) return false;
-     int width = 13;
+     int width = 18;
      cout << "ALL STUDENTS:" << endl;
      cout << "ID" 
          << std::setw(width) << "Name"
@@ -41,17 +48,32 @@ bool Database::printAllStu(){
     return true;
 }
 
+// Recursive helper function that allows simple printing of entire student BST
 void Database::pPrintAllStu(TreeNode<Student>* s) {
     if (s == 0) return;
-    pPrintAllStu(s->getLeft());
-    printStuForTable(s);
     pPrintAllStu(s->getRight());
+    printStuForTable(s);
+    pPrintAllStu(s->getLeft());
 }
 
+// Helper function for printing all students. Formats student information to fit into table
+bool Database::printStuForTable(TreeNode<Student>* s) {
+    if (s == 0) return false;
+    int width = 18;
+    cout << s->getData().getID()
+    << std::setw(width) << s->getData().getName()
+    << std::setw(width) << s->getData().getGPA()
+    << std::setw(width) << s->getData().getLevel()
+    << std::setw(width) << s->getData().getMajor()
+    << std::setw(width) << s->getData().getAdvisor() << endl;
+    return true;
+}
+
+// Dispays all faculty members in a table
 bool Database::printAllFac(){
     
     if (getNumFac() == 0) return false;
-    int width = 13;
+    int width = 18;
     cout << "ALL FACULTY:" << endl;
     cout << "ID"
         << std::setw(width) << "Name"
@@ -62,51 +84,55 @@ bool Database::printAllFac(){
     pPrintAllFac(cursor);
     return true;
 }
+
+// Recursive helper function that allows simple printing of entire faculty BST
 void Database::pPrintAllFac(TreeNode<Faculty>* f) {
     if (f == 0) return;
-    pPrintAllFac(f->getLeft());
-    printFacForTable(f);
     pPrintAllFac(f->getRight());
+    printFacForTable(f);
+    pPrintAllFac(f->getLeft());
 }
+
+// Helper function for printing all faculty. Formats faculty information to fit into table
+bool Database::printFacForTable(TreeNode<Faculty>* f) {
+    if (f == 0) return false;
+    int width = 18;
+    cout << f->getDataPtr()->getID()
+    << std::setw(width) << f->getDataPtr()->getName()
+    << std::setw(width) << f->getDataPtr()->getLevel()
+    << std::setw(width) << f->getDataPtr()->getDepartment()
+    << std::setw(width) << f->getDataPtr()->getNumAdvisees() << endl;
+    return true;
+}
+
+// Displays a single student to the user with all relevant information
 bool Database::printStu(int id){
     TreeNode<Student>* node = sTree.find(Student(id));
     if (node == 0) return false;
     cout << node->getData().toString() << endl << endl;
     return true;
 }
-bool Database::printStuForTable(TreeNode<Student>* s) {
-    if (s == 0) return false;
-    int width = 13;
-    cout << s->getData().getID() 
-         << std::setw(width) << s->getData().getName()
-         << std::setw(width) << s->getData().getGPA()
-         << std::setw(width) << s->getData().getLevel()
-         << std::setw(width) << s->getData().getMajor()
-         << std::setw(width) << s->getData().getAdvisor() << endl;
-    return true;
-}
+
+// Displays a single faculty to user with all relevant information
 bool Database::printFac(int id){
     TreeNode<Faculty>* node = fTree.find(Faculty(id));
     if (node == 0) return false;
     cout << node->getData().toString() << endl << endl;
     return true;
 }
-bool Database::printFacForTable(TreeNode<Faculty>* f) {
-    if (f == 0) return false;
-    int width = 13;
-    cout << f->getDataPtr()->getID()
-         << std::setw(width) << f->getDataPtr()->getName()
-         << std::setw(width) << f->getDataPtr()->getLevel()
-         << std::setw(width) << f->getDataPtr()->getDepartment()
-         << std::setw(width) << f->getDataPtr()->getNumAdvisees() << endl;
-    return true;
-}
+
+// Takes student id and prints out the faculty member who is the advisor to the student
 bool Database::printAdvisor(int id){
     TreeNode<Student>* node = sTree.find(Student(id));
     if (node == 0) return false;
+    if (node->getData().getAdvisor() == 0){
+        cout << "This student has no advisor." << endl << endl;
+    }
     cout << fTree.find(node->getData().getAdvisor())->getData().toString() << endl << endl;
     return true;
 }
+
+// Takes faculty id and prints out a table of all students who are advisees to the faculty
 bool Database::printAdvisees(int id){
     TreeNode<Faculty>* node = fTree.find(Faculty(id));
     if (node == 0) return false;
@@ -114,7 +140,7 @@ bool Database::printAdvisees(int id){
         cout << "This faculty member has no advisees." << endl << endl;
         return true;
     }
-    int width = 13;
+    int width = 18;
     cout << "ID"
         << std::setw(width) << "Name"
         << std::setw(width) << "GPA"
@@ -123,15 +149,19 @@ bool Database::printAdvisees(int id){
         << std::setw(width) << "Advisor" << endl;
     pPrintAdvisees(node->getData().getAdvisees()->getRoot());
     return true;
+    
 }
 
+// Recursive helper function that allows easy printing of faculty advisee BST
 void Database::pPrintAdvisees(TreeNode<int>* node){
     if (node == 0) return;
-    pPrintAdvisees(node->getLeft());
-    printStuForTable(sTree.find(Student(node->getData())));
     pPrintAdvisees(node->getRight());
+    printStuForTable(sTree.find(Student(node->getData())));
+    pPrintAdvisees(node->getLeft());
 }
 
+// Adds a student to the database.
+// If student has faculty advisor, the faculty member's advisee list is updated.
 bool Database::addStu(Student t){
     sTree.insert(t);
     
@@ -142,6 +172,8 @@ bool Database::addStu(Student t){
     return true;
 }
 
+// Removes student from database.
+// Removes student entry from advisor's advisee list
 bool Database::deleteStu(Student t){
     TreeNode<Student>* s = sTree.find(t);
     if (s == 0) return false;
@@ -149,27 +181,41 @@ bool Database::deleteStu(Student t){
     return sTree.remove(t);
 }
 
+// Adds faculty member to database
 bool Database::addFac(Faculty t){
     fTree.insert(t);
+    
+    if (t.getAdvisees()->length() != 0){
+        setAdvisees(t.getAdvisees()->getRoot(), t.getID());
+    }
+    
     return true;
 }
-    
+
+// Recursive helper function to assist setting all advisee's to give advisor number
+void Database::setAdvisees(TreeNode<int>* n, int x){
+    if (n == 0) return;
+    setAdvisees(n->getLeft(), x);
+    sTree.find(Student(n->getData()))->getDataPtr()->setAdvisor(x);
+    setAdvisees(n->getRight(), x);
+}
+
+// Removes faculty member from database.
+// Set's all advisees' advisor to 0, meaning student has no advisor
 bool Database::deleteFac(Faculty t){
     TreeNode<Faculty>* f = fTree.find(t);
     
     if (f == 0) return false;
     
-    advisorToZero(f->getDataPtr()->getAdvisees()->getRoot());
+    setAdvisees(f->getDataPtr()->getAdvisees()->getRoot(), 0);
     
     return fTree.remove(t);
 }
 
-void Database::advisorToZero(TreeNode<int>* n){
-    advisorToZero(n->getLeft());
-    *(n->getDataPtr()) = 0;
-    advisorToZero(n->getRight());
-}
-
+// Takes student id and faculty id.
+// Changes the student's advisor to the new id
+// Adds student to avisor's advisee list
+// Deletes student from old advisor's advisee list
 bool Database::changeAdvisor(int sId, int fId){
     TreeNode<Student>* sNode = sTree.find(Student(sId));
     TreeNode<Faculty>* fNode = fTree.find(Faculty(fId));
@@ -194,7 +240,9 @@ bool Database::changeAdvisor(int sId, int fId){
     
 }
 
-
+// Take faculty id and student id
+// Removes advisee from faculty advisee list
+// Set's student advisor to none
 bool Database::removeAdvisee(int fId, int sId){
     TreeNode<Faculty>* fNode = fTree.find(Faculty(fId));
     TreeNode<Student>* sNode = sTree.find(Student(sId));
@@ -209,8 +257,10 @@ bool Database::removeAdvisee(int fId, int sId){
     return false;
 }
 
-
- void Database::initializeFiles(){
+// Searches present working directory for the student and faculty database files.
+// If found, the contents are loaded into the database
+// If not found, user is informed that the files will be created upon exiting the program
+void Database::initializeFiles(){
     
      std::cout << "Initializing database..." << endl;
      
@@ -220,7 +270,7 @@ bool Database::removeAdvisee(int fId, int sId){
      
      // See if student file exists in current directory, if not, make it
      if(!checkFiles(stuFile)){
-         std::cout<<"Student file not found. File will be created."<<endl;
+         std::cout<<"Student file not found. File will be created upon exit."<<endl;
      }
      else{
 
@@ -241,10 +291,13 @@ bool Database::removeAdvisee(int fId, int sId){
          buffPtr = 0;
          int numEntries = 0;
          if (size >= 4){
+             // Number of students in database
              numEntries = deserializeInt(buffPtr, sData);
+             // current next student ID to used when a student is added
              nextStuID = deserializeInt(buffPtr, sData);
          }
          
+         // Deserialize each student into the database
          for(int i = 0; i < numEntries; ++i){
              Student t;
              t.deserialize(sData, buffPtr);
@@ -256,7 +309,7 @@ bool Database::removeAdvisee(int fId, int sId){
     
      // See if faculty file exists in current directory, if not, make it
      if (!checkFiles(facFile)) {
-         std::cout<<"Faculty file not found. Files will be created."<<endl;
+         std::cout<<"Faculty file not found. Files will be created upon exit."<<endl;
      }
      else{
          std::cout<<"Faculty file found. Reading contents into database."<<endl;
@@ -272,10 +325,13 @@ bool Database::removeAdvisee(int fId, int sId){
          buffPtr = 0;
          int numEntries = 0;
          if (size >= 8){
+             // Number of faculty in database
              numEntries = deserializeInt(buffPtr, fData);
+             // Current next ID to be used when faculty is added
              nextFacID = deserializeInt(buffPtr, fData);
          }
          
+         // Load all faculty into database
          for (int i = 0; i < numEntries; ++i) {
              Faculty t;
              t.deserialize(fData, buffPtr);
@@ -297,7 +353,7 @@ bool Database::checkFiles(std::string fileName){
  }
 
 // This function saves the state of the database to the files
-bool Database::save(){
+void Database::save(){
     
     // SAVE STUDENT FILE
     {
@@ -324,10 +380,9 @@ bool Database::save(){
         facSerialize(fTree.getRoot(), fFile);
         fFile.close();
     }
-    
-    return false; // false until functional
 }
 
+// Method to deserialize int from file. Saves into buffer
 int Database::deserializeInt(int &dPtr, char *d){
     int x = 0;
     x |= ((int(0 | d[dPtr++]) & 0xFF) << 24);
@@ -337,6 +392,7 @@ int Database::deserializeInt(int &dPtr, char *d){
     return x;
 }
 
+// Method to serialize int into file. Saves directly to file
 void Database::serializeInt(int x, std::fstream &file){
     
     char temp[4];
@@ -350,6 +406,7 @@ void Database::serializeInt(int x, std::fstream &file){
     }
 }
 
+// Recursive function to serialize student tree
 void Database::stuSerialize(TreeNode<Student>* s, std::fstream &file){
     if (s == 0) return;
     
@@ -357,6 +414,8 @@ void Database::stuSerialize(TreeNode<Student>* s, std::fstream &file){
     s->getData().serialize(file);
     stuSerialize(s->getRight(), file);
 }
+
+// Recursive function to serialize faculty tree
 void Database::facSerialize(TreeNode<Faculty>* f, std::fstream &file){
     if (f == 0) return;
     
@@ -365,11 +424,12 @@ void Database::facSerialize(TreeNode<Faculty>* f, std::fstream &file){
     facSerialize(f->getRight(), file);
 }
 
-
+// Returns the number of faculty in database
 int Database::getNumFac(){
     return fTree.length();
 }
 
+// Returns the number of students in database
 int Database::getNumStu(){
     return sTree.length();
 }

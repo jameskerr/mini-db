@@ -32,11 +32,6 @@ Faculty::~Faculty(){
     
 }
 
-bool Faculty::addAdvisee(int id) {
-    advisees.insert(id);
-    return true;
-}
-
 // Comparison operators
 bool Faculty::operator > (const Faculty& other){
     return ID > other.ID;
@@ -74,7 +69,9 @@ bool Faculty::serialize (std::fstream &file){
      }
      return true;
  }
- void Faculty::storeStr(string str, std::fstream &file){
+
+// Serializes string into file
+void Faculty::storeStr(string str, std::fstream &file){
     
      const char* s = str.c_str();
      
@@ -83,6 +80,7 @@ bool Faculty::serialize (std::fstream &file){
      }
  }
 
+// Serialize int into file
 void Faculty::serializeInt(int x, std::fstream &file){
     char temp[4];
     temp[0] = (x >> 24) & 0xFF;
@@ -95,16 +93,17 @@ void Faculty::serializeInt(int x, std::fstream &file){
     }
  }
 
- void Faculty::serializeBST(TreeNode<int>* n, std::fstream &file){
+// Serializes advisee BST
+// Advisee's were stored in BST so that upon printing, they will print in numerical order
+void Faculty::serializeBST(TreeNode<int>* n, std::fstream &file){
      if (n == 0) return;
      serializeBST(n->getLeft(), file);
      serializeInt(n->getData(), file);
      serializeBST(n->getRight(), file);
- }
+}
 
-
-
- bool Faculty::deserialize (char* addr, int &dPtr){
+// Loads faculty object from file data
+bool Faculty::deserialize (char* addr, int &dPtr){
      try{
          ID = 0;
         
@@ -128,6 +127,7 @@ void Faculty::serializeInt(int x, std::fstream &file){
          numAdvisees |= ((int(0 | addr[dPtr++]) & 0xFF) << 8);
          numAdvisees |= ((int(0 | addr[dPtr++]) & 0xFF) << 0);
 
+         // all advisees saves to buffer
          for (int i = 0; i < numAdvisees; ++i) {
              int temp = 0;
              temp |= ((int(0 | addr[dPtr++]) & 0xFF) << 24);
@@ -144,7 +144,7 @@ void Faculty::serializeInt(int x, std::fstream &file){
      return true;
  }
 
-
+// loads string from buffer
  string Faculty::getStr(int &dPtr, char *d){
      string temp = "";
     
@@ -156,9 +156,16 @@ void Faculty::serializeInt(int x, std::fstream &file){
      return temp;
  }
 
+// faculty toString method used for printing info to user
 std::string Faculty::toString(){
     std::stringstream i;
     i << ID;
     std::string temp = "ID: " + i.str() + "\nName: " + name + "\nDepartment: " + department + "\nLevel: " + level;
     return temp;
+}
+
+// Inserts new advisee into BST
+bool Faculty::addAdvisee(int id) {
+    advisees.insert(id);
+    return true;
 }

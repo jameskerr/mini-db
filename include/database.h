@@ -42,27 +42,7 @@ public:
     bool removeAdvisee(int fId, int sId);
     inline int autoStuID() { return nextStuID++; }
     inline int autoFacID() { return nextFacID++; }
-    bool save();
-    
-    // NEED TO SAVE THE CURRENT IDs WHEN WE SERIALIZE
-    
-    /*
-     Print all students
-     Print all faculty
-     Print student (student id)
-     Print faculty (faculty id)
-     Print faculty adviser (student id)
-     Print all advisees (faculty id)
-     Add student (student data)
-     Delete student (student id)
-     Add faculty (faculty data)
-     Delete faculty (faculty id)
-     Change student adviser(student id, faculty id)
-     Remove advisee from faculty(faculty id, student id)
-     Rollback
-     Exit
-     */
-    
+    void save();
     
 private:
     // Private Attributes
@@ -70,8 +50,8 @@ private:
     BST<Faculty> fTree;
     int nextStuID;
     int nextFacID;
-    
     int buffPtr;
+    
     //Methods
     int getNumStu();
     int getNumFac();
@@ -80,7 +60,7 @@ private:
     bool printStuForTable(TreeNode<Student>* s);
     bool printFacForTable(TreeNode<Faculty>* f);
     void pPrintAdvisees(TreeNode<int>* n);
-    void advisorToZero(TreeNode<int>* n);
+    void setAdvisees(TreeNode<int>* n, int x);
     
     // File IO
     void initializeFiles();

@@ -82,6 +82,8 @@ bool Student::serialize (std::fstream &file){
     }
     return true;
 }
+
+// Saves string into file
 void Student::storeStr(string str, std::fstream &file){
     
     const char* s = str.c_str();
@@ -91,7 +93,7 @@ void Student::storeStr(string str, std::fstream &file){
     }
 }
 
-
+// Loads student from file data
 bool Student::deserialize (char* addr, int &dPtr){
     try{
         ID = 0;
@@ -131,6 +133,8 @@ bool Student::deserialize (char* addr, int &dPtr){
     }
     return true;
 }
+
+// reads string in buffer
 string Student::getStr(int &dPtr, char *d){
     string temp = "";
     
@@ -142,6 +146,7 @@ string Student::getStr(int &dPtr, char *d){
     return temp;
 }
 
+// Student toString used for printing
 std::string Student::toString(){
     std::stringstream i, g, a;
     i << ID;
