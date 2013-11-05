@@ -154,7 +154,7 @@ bool Database::changeAdvisor(int sId, int fId){
             
             // Delete student from old advisor
             if (oldFac != 0) {
-                oldFac->getData().getAdvisees()->remove(sId);
+                oldFac->getDataPtr()->getAdvisees()->remove(sId);
             }
             return true;
         }
