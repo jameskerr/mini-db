@@ -9,7 +9,6 @@
 
 Faculty::Faculty(){
     this->ID = 0;
-    this->numAdvisees = 0;
     this->name = "";
     this->level = "";
     this->department = "";
@@ -50,7 +49,7 @@ bool Faculty::serialize (char* addr, int &dPtr){
          storeStr(department, dPtr, addr);
         
          // Serialize numAdvisees
-         serializeInt(numAdvisees, dPtr, addr);
+         serializeInt(advisees.length(), dPtr, addr);
          
          // Serialize BST
          serializeBST(advisees.getRoot(), dPtr, addr);

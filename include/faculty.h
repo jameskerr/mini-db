@@ -43,7 +43,7 @@ public:
     string getLevel() {return level;};
     string getDepartment() {return department;};
     BST<int>* getAdvisees() {return &advisees;};
-    int getNumAdvisees() {return numAdvisees;};
+    int getNumAdvisees() {return advisees.length();};
     
 private:
     int ID;
@@ -51,7 +51,6 @@ private:
     string level;
     string department;
     BST<int> advisees;
-    int numAdvisees;
     
     // Serialization helper functions
     void storeStr(string str, int &dPtr, char *d);
