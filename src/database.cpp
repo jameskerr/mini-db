@@ -73,7 +73,7 @@ bool Database::printStuForTable(TreeNode<Student>* s) {
 bool Database::printAllFac(){
     
     if (getNumFac() == 0) return false;
-    int width = 18;
+    int width = 22;
     cout << "ALL FACULTY:" << endl;
     cout << "ID"
         << std::setw(width) << "Name"
@@ -96,7 +96,7 @@ void Database::pPrintAllFac(TreeNode<Faculty>* f) {
 // Helper function for printing all faculty. Formats faculty information to fit into table
 bool Database::printFacForTable(TreeNode<Faculty>* f) {
     if (f == 0) return false;
-    int width = 18;
+    int width = 22;
     cout << f->getDataPtr()->getID()
     << std::setw(width) << f->getDataPtr()->getName()
     << std::setw(width) << f->getDataPtr()->getLevel()
@@ -247,12 +247,13 @@ bool Database::removeAdvisee(int fId, int sId){
     TreeNode<Faculty>* fNode = fTree.find(Faculty(fId));
     TreeNode<Student>* sNode = sTree.find(Student(sId));
     if(fNode != 0){
-        fNode->getDataPtr()->getAdvisees()->remove(sId);
         if (sNode != 0) {
-            // Set student advisor to empty
-            sNode->getDataPtr()->setAdvisor(0);
+            // Set student advisor to empty, if student is an advisee of faculty member
+            if (fNode->getDataPtr()->getAdvisees()->find(sId))
+                fNode->getDataPtr()->getAdvisees()->remove(sId);
+                sNode->getDataPtr()->setAdvisor(0);
+            return true;
         }
-        return true;
     }
     return false;
 }

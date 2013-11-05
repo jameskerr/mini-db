@@ -166,7 +166,7 @@ void DatabaseUI::removeAdvisee() {
 	int stu = getInt("Student ID: ");
 	int fac = getInt("Faculty ID: ");
 	if (!db->removeAdvisee(fac, stu)) {
-		cout << "Error.  Student ID or Faculty ID do not exist." << endl;
+		cout << "Error.  Student ID or Faculty ID do not exist. Or the student is not an advisee of the faculty." << endl;
 	} else {
 		history->removedAdvisee(fac, stu);
 		cout << "Removed student #" << stu << " from faculty #" << fac << endl;
