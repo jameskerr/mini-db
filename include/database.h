@@ -26,11 +26,11 @@ public:
     friend class DatabaseUI;
 
     // Database operations
-    void printAllStu();
+    bool printAllStu();
     bool printAllFac();
     bool printStu(int id);
-    bool printStuForTable(TreeNode<Student>* s);
-    bool printFacForTable(TreeNode<Faculty>* f);
+
+
     bool printFac(int id);
     bool printAdvisor(int id);
     bool printAdvisees(int id);
@@ -87,8 +87,6 @@ private:
     const std::string stuFile;
     const std::string facFile;
     bool save();
-    void pPrintAllStu(TreeNode<Student>* s);
-    void pPrintAllFac(TreeNode<Faculty>* f);
 };
 
 #endif

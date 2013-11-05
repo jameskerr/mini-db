@@ -113,10 +113,10 @@ bool Database::printAdvisees(int id){
     return true;
 }
 
-void pPrintAdvisees(TreeNode<int>* node){
+void Database::pPrintAdvisees(TreeNode<int>* node){
     if (node == 0) return;
     pPrintAdvisees(node->getLeft());
-    cout << sTree.find(node->getData()).getData().toString() << endl << endl;
+    printStuForTable(sTree.find(Student(node->getData())));
     pPrintAdvisees(node->getRight());
 }
 

@@ -4,6 +4,9 @@
 *.o
 *.exe
 
+# Stupid Mac .DS_Store
+*.DS_Store
+
 # Compiled Dynamic libraries
 *.so
 *.dylib
