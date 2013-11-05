@@ -1,20 +1,21 @@
 #ifndef UNDOREDO_H
 #define UNDOREDO_H 
 
+#include "Database.h"
 #include "Stack.h"
 #include "Commands.h"
 
 class UndoRedo {
 public:
-	UndoRedo(BST<int>* theDb): db(theDb) {}
+	UndoRedo(Database* theDb): db(theDb) {}
 	void rollback(int level);
-	void insertedStudent(int student);
-	void removedStudent(int student);
-	void insertedFaculty(int faculty);
-	void removedFaculty(int faculty);
+	void insertedStudent(Student student);
+	void removedStudent(Student student);
+	void insertedFaculty(Faculty faculty);
+	void removedFaculty(Faculty faculty);
 
 private:
-	BST<int>* db;  // Replace with the real database
+	Database* db;
 	Stack<ICommand*> undo_commands;
 	Stack<ICommand*> redo_commands;
 };

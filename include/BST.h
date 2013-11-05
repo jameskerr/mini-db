@@ -13,6 +13,7 @@ public:
 	BST();
 	virtual ~BST();
 	// PUBLIC METHODS
+	void traverse(TreeNode<T>* start, bool visit(TreeNode<T>*));
 	void insert(T data);
 	TreeNode<T>* find(T data);
 	bool remove(T data);
@@ -135,6 +136,7 @@ bool BST<T>::remove(T data) {
 			parent->right = 0;
 	}
 	delete target;
+	--size;
 	return true;
 }
 
@@ -196,5 +198,13 @@ TreeNode<T>* BST<T>::getPredecessor(TreeNode<T>* node) {
 	while (node->right != 0) { parent = node; node = node->right; }
 	parent->right = 0;
 	return node;
+}
+
+template <class T>
+void BST<T>::traverse(TreeNode<T>* node, bool visit(TreeNode<T>*)) {
+	if (node == 0) return;
+	traverse(node->left, visit);
+	visit(node);
+	traverse(node->right, visit);
 }
 #endif

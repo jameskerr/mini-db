@@ -2,65 +2,65 @@
 #define COMMANDS_H 
 
 #include <iostream>
-#include "BST.h"
+#include "database.h"
 #include "ICommand.h"
-//#include "Student.h"
-//#include "Faculty.h"
+#include "Student.h"
+#include "Faculty.h"
 
 class InsertStudentCommand : public ICommand {
 public:
-	InsertStudentCommand(BST<int>* theDb, int theStudent): db(theDb), student(theStudent) {}
+	InsertStudentCommand(Database* theDb, Student theStudent): db(theDb), student(theStudent) {}
 	inline void execute() { 
-		db->insert(student);
+		db->addStu(student);
 	}
 	inline void unexecute() { 
-		db->remove(student);
+		db->deleteStu(student);
 	}
 private:
-	BST<int>* db; // replace this with the database
-	int student;  // replace int fg
+	Database* db;
+	Student student; 
 };
 
 class RemoveStudentCommand : public ICommand {
 public:
-	RemoveStudentCommand(BST<int>* theDb, int theStudent): db(theDb), student(theStudent) {}
+	RemoveStudentCommand(Database* theDb, Student theStudent): db(theDb), student(theStudent) {}
 	inline void execute() { 
-		db->remove(student);
+		db->deleteStu(student);
 	}
 	inline void unexecute() { 
-		db->insert(student);
+		db->addStu(student);
 	}
 private:
-	BST<int>* db; // replace this with the database
-	int student;  // replace int with Student
+	Database* db;
+	Student student;
 };
 
 class InsertFacultyCommand : public ICommand {
 public:
-	InsertFacultyCommand(BST<int>* theDb, int theFaculty): db(theDb), faculty(theFaculty) {}
+	InsertFacultyCommand(Database* theDb, Faculty theFaculty): db(theDb), faculty(theFaculty) {}
 	inline void execute() { 
-		db->insert(faculty);
+		db->addFac(faculty);
 	}
 	inline void unexecute() { 
-		db->remove(faculty);
+		db->deleteFac(faculty);
 	}
 private:
-	BST<int>* db; // replace this with the database
-	int faculty; // replace int with Faculty
+	Database* db;
+	Faculty faculty;
 };
 
 class RemoveFacultyCommand : public ICommand {
 public:
-	RemoveFacultyCommand(BST<int>* theDb, int theFaculty): db(theDb), faculty(theFaculty) {}
+	RemoveFacultyCommand(Database* theDb, Faculty theFaculty): db(theDb), faculty(theFaculty) {}
 	inline void execute() { 
-		db->remove(faculty);
+		db->deleteFac(faculty);
 	}
 	inline void unexecute() { 
-		db->insert(faculty);
+		db->addFac(faculty);
 	}
 private:
-	BST<int>* db; // replace this with the database
-	int faculty;  // replace int with Faculty
+	Database* db;
+	Faculty faculty; 
 };
 
 
