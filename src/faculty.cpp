@@ -49,7 +49,7 @@ bool Faculty::serialize (char* addr, int &dPtr){
          storeStr(department, dPtr, addr);
         
          // Serialize numAdvisees
-         serializeInt(advisees.length(), dPtr, addr);
+         serializeInt(getNumAdvisees(), dPtr, addr);
          
          // Serialize BST
          serializeBST(advisees.getRoot(), dPtr, addr);
@@ -106,7 +106,7 @@ void Faculty::serializeInt(int x, int &dPtr, char *d){
          department = getStr(dPtr, addr);
          
          // number of advisees
-         numAdvisees = 0;
+         int numAdvisees = 0;
          numAdvisees |= ((int(0 | addr[dPtr++]) & 0xFF) << 24);
          numAdvisees |= ((int(0 | addr[dPtr++]) & 0xFF) << 16);
          numAdvisees |= ((int(0 | addr[dPtr++]) & 0xFF) << 8);
