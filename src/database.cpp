@@ -121,10 +121,10 @@ void Database::pPrintAdvisees(TreeNode<int>* node){
 }
 
 bool Database::addStu(Student t){
-    if (sTree.find(t))
-        return false;
-    else{
-        sTree.insert(t);
+    sTree.insert(t);
+    TreeNode<Faculty>* fNode = fTree.find(Faculty(t.getAdvisor()));
+    if(fNode != 0){
+        fNode->getData().getAdvisees()->insert(t.getID());
     }
     return true;
 }
@@ -132,11 +132,7 @@ bool Database::deleteStu(Student t){
     return sTree.remove(t);
 }
 bool Database::addFac(Faculty t){
-    if (fTree.find(t))
-        return false;
-    else {
-        fTree.insert(t);
-    }
+    fTree.insert(t);
     return true;
 }
     
