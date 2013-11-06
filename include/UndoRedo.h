@@ -21,6 +21,9 @@ private:
 	Database* db;
 	Stack<ICommand*> undo_commands;
 	Stack<ICommand*> redo_commands;
+    
+    // METHODS
+    void clearRedoStack();
 };
 
 #endif

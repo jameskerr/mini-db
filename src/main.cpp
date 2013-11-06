@@ -14,7 +14,7 @@ int main() {
      
      while (go) {
      	ui.menu();
-     	choice  = getInt("");
+     	choice  = getInt("Menu choice: ");
      	switch (choice) {
      		case 1:
      			ui.showAllStudents();
@@ -55,9 +55,15 @@ int main() {
 			case 13:
 				ui.rollback();
 			break;
-			case 14:
-				go = false;
+            case 14:
+                ui.rollforward();
+                break;
+			case 15:
+				ui.save();
 			break;
+            case 16:
+                go = false;
+            break;
 			default:
 			break;
      	}

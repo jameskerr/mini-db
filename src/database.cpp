@@ -11,7 +11,6 @@ It allows entries to be added, removed, reorganized, and displayed to the user.
 */
 
 #include "Database.h"
-#include "dirent.h"
 #include <fstream>
 #include <iostream>
 #include <iomanip> // for setw
@@ -37,7 +36,7 @@ bool Database::printAllStu(){
     if (getNumStu() == 0) return false;
      int width = 18;
      cout << "ALL STUDENTS:" << endl;
-     cout << std::setw(width) <<"ID" 
+     cout << std::setw(5) <<"ID"
          << std::setw(width) << "Name"
          << std::setw(width) << "GPA"
          << std::setw(width) << "Level"
@@ -61,7 +60,7 @@ bool Database::printStuForTable(TreeNode<Student>* s) {
     if (s == 0) return false;
     int width = 18;
     cout 
-    << std::setw(width) << s->getData().getID()
+    << std::setw(5) << s->getData().getID()
     << std::setw(width) << s->getData().getName()
     << std::setw(width) << s->getData().getGPA()
     << std::setw(width) << s->getData().getLevel()
@@ -76,7 +75,7 @@ bool Database::printAllFac(){
     if (getNumFac() == 0) return false;
     int width = 22;
     cout << "ALL FACULTY:" << endl;
-    cout << std::setw(width) <<"ID" 
+    cout << std::setw(5) <<"ID"
         << std::setw(width) << "Name"
         << std::setw(width) << "Level"
         << std::setw(width) << "Department"
@@ -99,7 +98,7 @@ bool Database::printFacForTable(TreeNode<Faculty>* f) {
     if (f == 0) return false;
     int width = 22;
     cout 
-    << std::setw(width) << f->getDataPtr()->getID()
+    << std::setw(5) << f->getDataPtr()->getID()
     << std::setw(width) << f->getDataPtr()->getName()
     << std::setw(width) << f->getDataPtr()->getLevel()
     << std::setw(width) << f->getDataPtr()->getDepartment()
@@ -143,7 +142,7 @@ bool Database::printAdvisees(int id){
         return true;
     }
     int width = 18;
-    cout << std::setw(width) << "ID"
+    cout << std::setw(5) << "ID"
         << std::setw(width) << "Name"
         << std::setw(width) << "GPA"
         << std::setw(width) << "Level"
@@ -179,7 +178,10 @@ bool Database::addStu(Student t){
 bool Database::deleteStu(Student t){
     TreeNode<Student>* s = sTree.find(t);
     if (s == 0) return false;
-    fTree.find(Faculty(s->getDataPtr()->getAdvisor()))->getDataPtr()->getAdvisees()->remove(t.getID());
+    TreeNode<Faculty>* fNode = fTree.find(Faculty(s->getDataPtr()->getAdvisor()));
+    if (fNode != 0){
+        fNode->getDataPtr()->getAdvisees()->remove(t.getID());
+    }
     return sTree.remove(t);
 }
 
@@ -223,20 +225,22 @@ bool Database::changeAdvisor(int sId, int fId){
     TreeNode<Faculty>* fNode = fTree.find(Faculty(fId));
     // Get student's current advisor
     if (sNode != 0){
-    TreeNode<Faculty>* oldFac = fTree.find(Faculty(sNode->getData().getAdvisor()));
+        TreeNode<Faculty>* oldFac = fTree.find(Faculty(sNode->getData().getAdvisor()));
+        if (fId == 0){
+            sNode->getDataPtr()->setAdvisor(fId);
+        }
         if(fNode != 0){
             // Add new advisor to student
             sNode->getDataPtr()->setAdvisor(fId);
             
             // Add student to advisee list
             fNode->getDataPtr()->getAdvisees()->insert(sId);
-            
-            // Delete student from old advisor
-            if (oldFac != 0) {
-                oldFac->getDataPtr()->getAdvisees()->remove(sId);
-            }
-            return true;
         }
+        // Delete student from old advisor
+        if (oldFac != 0) {
+            oldFac->getDataPtr()->getAdvisees()->remove(sId);
+        }
+        return true;
     }
     return false;
     
@@ -357,6 +361,8 @@ bool Database::checkFiles(std::string fileName){
 
 // This function saves the state of the database to the files
 void Database::save(){
+    
+    cout << endl << endl << "Saving files." << endl << endl;
     
     // SAVE STUDENT FILE
     {

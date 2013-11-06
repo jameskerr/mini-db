@@ -25,26 +25,10 @@ public:
 	void deleteFaculty();
 	void removeAdvisee();
 	void rollback();
+    void rollforward();
+    void save();
 private:
 	Database* db;
 	UndoRedo* history;
 };
 #endif
-
-/*
-     Print all students
-     Print all faculty
-     Print student (student id)
-     Print faculty (faculty id)
-     Print faculty adviser (student id)
-     Print all advisees (faculty id)
-     
-     Add student (student data)
-     Delete student (student id)
-     Add faculty (faculty data)
-     Delete faculty (faculty id)
-     Change student adviser(student id, faculty id)
-     Remove advisee from faculty(faculty id, student id)
-     Rollback
-     Exit
-     */

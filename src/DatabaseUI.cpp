@@ -10,20 +10,22 @@ using std::endl;
 void DatabaseUI::menu() {
 	cout << endl << "----------------STUDENT & FACULTY DATABASE--------------" << endl;
 	cout << "Select an option." << endl;
-	cout << "1) Show all students" << endl;
-	cout << "2) Show all faculty" << endl;
-	cout << "3) Show a student" << endl;
-	cout << "4) Show a faculty" << endl;
-	cout << "5) Show a student's advisor" << endl;
-	cout << "6) Show a faculty's advisees" << endl;
-	cout << "7) Add a student" << endl;
-	cout << "8) Add a faculty" << endl;
-	cout << "9) Change a student's advisor" << endl;
+	cout << "1)  Show all students" << endl;
+	cout << "2)  Show all faculty" << endl;
+	cout << "3)  Show a student" << endl;
+	cout << "4)  Show a faculty" << endl;
+	cout << "5)  Show a student's advisor" << endl;
+	cout << "6)  Show a faculty's advisees" << endl;
+	cout << "7)  Add a student" << endl;
+	cout << "8)  Add a faculty" << endl;
+	cout << "9)  Change a student's advisor" << endl;
 	cout << "10) Delete a student" << endl;
 	cout << "11) Delete a faculty" << endl;
 	cout << "12) Remove advisee from faculty" << endl;
 	cout << "13) Rollback the database" << endl;
-	cout << "14) Exit" << endl;
+    cout << "14) Rollforward the database" << endl;
+    cout << "15) Save now" << endl;
+	cout << "16) Save & Exit" << endl;
 	cout << endl;
 }
 
@@ -185,7 +187,19 @@ void DatabaseUI::removeAdvisee() {
 }
 
 void DatabaseUI::rollback() {
-	int steps = getInt("Number of steps to reverse: ");
+	int steps = getInt("Number of steps to undo: ");
 	history->rollback(steps);
 	pause("\nPress ENTER to continue...");
+}
+
+void DatabaseUI::rollforward() {
+    int steps = getInt("Number of steps to redo: ");
+	history->rollforward(steps);
+	pause("\nPress ENTER to continue...");
+}
+
+void DatabaseUI::save(){
+    db->save();
+    cout << "Files have been saved." << endl;
+    pause("\nPress ENTER to continue...");
 }
