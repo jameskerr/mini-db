@@ -34,7 +34,7 @@ public:
 
     //Serialization/Deserialization operators
     bool serialize (std::fstream &file);
-    bool deserialize (char* addr, int &dPtr);
+    void deserialize (char* addr, int &dPtr, unsigned long buffSize);
     
     //Methods
     std::string toString();
@@ -57,9 +57,11 @@ private:
     
     // Serialization helper functions
     void storeStr(string str, std::fstream &file);
-    string getStr(int &dPtr, char *d);
+    string getStr(int &dPtr, char *d, unsigned long buffSize);
     void serializeBST(TreeNode<int>*, std::fstream &file);
     void serializeInt(int x, std::fstream &file);
+    bool checkBuffForInt(int &dPtr, unsigned long buffSize);
+    bool checkBuffForChar(int &dPtr, unsigned long buffSize);
 };
 
 #endif

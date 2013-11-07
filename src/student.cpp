@@ -94,51 +94,52 @@ void Student::storeStr(string str, std::fstream &file){
 }
 
 // Loads student from file data
-bool Student::deserialize (char* addr, int &dPtr){
-    try{
-        ID = 0;
-        
-        // Load ID from data
-        ID |= ((int(0 | addr[dPtr++]) & 0xFF) << 24);
-        ID |= ((int(0 | addr[dPtr++]) & 0xFF) << 16);
-        ID |= ((int(0 | addr[dPtr++]) & 0xFF) << 8);
-        ID |= ((int(0 | addr[dPtr++]) & 0xFF) << 0);
+void Student::deserialize (char* addr, int &dPtr, unsigned long buffSize){
+    ID = 0;
+    
+    // Load ID from data
+    if (!checkBuffForBytes(4, dPtr, buffSize)) throw 10;
+    ID |= ((int(0 | addr[dPtr++]) & 0xFF) << 24);
+    ID |= ((int(0 | addr[dPtr++]) & 0xFF) << 16);
+    ID |= ((int(0 | addr[dPtr++]) & 0xFF) << 8);
+    ID |= ((int(0 | addr[dPtr++]) & 0xFF) << 0);
 
-        // Load Advisor
-        advisor |= ((int(0 | addr[dPtr++]) & 0xFF) << 24);
-        advisor |= ((int(0 | addr[dPtr++]) & 0xFF) << 16);
-        advisor |= ((int(0 | addr[dPtr++]) & 0xFF) << 8);
-        advisor |= ((int(0 | addr[dPtr++]) & 0xFF) << 0);
-        
-        // Load GPA
-        //Load GPA
-        GPA = 0;
-        char tGPA[8];
-        for (int p = 0; p < 8; ++p, ++dPtr){
-            tGPA[p] = addr[dPtr];
-        }
-        
-        GPA = *(double*)tGPA;
-        
-        // Load name
-        name = getStr(dPtr, addr);
-        // Load level
-        level = getStr(dPtr, addr);
-        // Load major
-        major = getStr(dPtr, addr);
+    // Load Advisor
+    if (!checkBuffForBytes(4, dPtr, buffSize)) throw 10;
+    advisor |= ((int(0 | addr[dPtr++]) & 0xFF) << 24);
+    advisor |= ((int(0 | addr[dPtr++]) & 0xFF) << 16);
+    advisor |= ((int(0 | addr[dPtr++]) & 0xFF) << 8);
+    advisor |= ((int(0 | addr[dPtr++]) & 0xFF) << 0);
+    
+    // Load GPA
+    //Load GPA
+    GPA = 0;
+    char tGPA[8];
+    if (!checkBuffForBytes(8, dPtr, buffSize)) throw 10;
+    for (int p = 0; p < 8; ++p, ++dPtr){
+        tGPA[p] = addr[dPtr];
+    }
+    
+    GPA = *(double*)tGPA;
+    
+    // Load name
+    name = getStr(dPtr, addr, buffSize);
+    // Load level
+    level = getStr(dPtr, addr, buffSize);
+    // Load major
+    major = getStr(dPtr, addr, buffSize);
+}
 
-    }
-    catch(std::exception e){
-        return false;
-    }
-    return true;
+bool Student::checkBuffForBytes(int bytes, int &dPtr, unsigned long buffSize){
+    return (dPtr <= buffSize - bytes);
 }
 
 // reads string in buffer
-string Student::getStr(int &dPtr, char *d){
+string Student::getStr(int &dPtr, char *d, unsigned long buffSize){
     string temp = "";
     
     while(d[dPtr] != 0){
+        if (!checkBuffForBytes(1, dPtr, buffSize)) throw 10;
         temp += d[dPtr++];
     }
     dPtr++; // increments over null character

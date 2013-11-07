@@ -281,35 +281,40 @@ void Database::initializeFiles(){
      }
      else{
 
-         
-         // If files already exist
-         std::cout<<"Student file found. Reading Contents into database."<<endl;
-         
-        sFile.open(stuFile.c_str(), std::ios::in|std::ios::out|std::ios::binary);
-
-         // Read studentFile into buffer
-         sFile.seekg(0, std::ios::end);
-         size_t size = sFile.tellg();
-         sFile.seekg(0, std::ios::beg);
-         char* sData = new char[size+1];
-         sFile.read(sData, size);
-         
-         
-         buffPtr = 0;
-         int numEntries = 0;
-         if (size >= 4){
-             // Number of students in database
-             numEntries = deserializeInt(buffPtr, sData);
-             // current next student ID to used when a student is added
-             nextStuID = deserializeInt(buffPtr, sData);
-         }
-         
-         // Deserialize each student into the database
-         for(int i = 0; i < numEntries; ++i){
-             Student t;
-             t.deserialize(sData, buffPtr);
+         try{
+             // If files already exist
+             std::cout<<"Student file found. Reading Contents into database."<<endl;
              
-             sTree.insert(t);
+            sFile.open(stuFile.c_str(), std::ios::in|std::ios::out|std::ios::binary);
+
+             // Read studentFile into buffer
+             sFile.seekg(0, std::ios::end);
+             size_t size = sFile.tellg();
+             sFile.seekg(0, std::ios::beg);
+             char* sData = new char[size+1];
+             sFile.read(sData, size);
+             
+             
+             buffPtr = 0;
+             int numEntries = 0;
+             if (size >= 4){
+                 // Number of students in database
+                 numEntries = deserializeInt(buffPtr, sData);
+                 // current next student ID to used when a student is added
+                 nextStuID = deserializeInt(buffPtr, sData);
+             }
+             
+             // Deserialize each student into the database
+             for(int i = 0; i < numEntries; ++i){
+                 Student t;
+                 t.deserialize(sData, buffPtr, size);
+                 
+                 sTree.insert(t);
+             }
+         }
+         catch(int e){
+             std::cout<<"Student file corrupted.\n\nProgram terminating."<<endl;
+             exit(1);
          }
      }
      sFile.close();
@@ -319,31 +324,37 @@ void Database::initializeFiles(){
          std::cout<<"Faculty file not found. File will be created upon exit."<<endl;
      }
      else{
-         std::cout<<"Faculty file found. Reading contents into database."<<endl;
-         fFile.open(facFile.c_str(), std::ios::in|std::ios::out|std::ios::binary);
+         try{
+             std::cout<<"Faculty file found. Reading contents into database."<<endl;
+             fFile.open(facFile.c_str(), std::ios::in|std::ios::out|std::ios::binary);
 
-         // Read facultyFile into buffer
-         fFile.seekg(0, std::ios::end);
-         size_t size = fFile.tellg();
-         fFile.seekg(0, std::ios::beg);
-         char fData[size+1];
-         fFile.read(fData, size);
-        
-         buffPtr = 0;
-         int numEntries = 0;
-         if (size >= 8){
-             // Number of faculty in database
-             numEntries = deserializeInt(buffPtr, fData);
-             // Current next ID to be used when faculty is added
-             nextFacID = deserializeInt(buffPtr, fData);
-         }
-         
-         // Load all faculty into database
-         for (int i = 0; i < numEntries; ++i) {
-             Faculty t;
-             t.deserialize(fData, buffPtr);
+             // Read facultyFile into buffer
+             fFile.seekg(0, std::ios::end);
+             size_t size = fFile.tellg();
+             fFile.seekg(0, std::ios::beg);
+             char fData[size+1];
+             fFile.read(fData, size);
             
-             fTree.insert(t);
+             buffPtr = 0;
+             int numEntries = 0;
+             if (size >= 8){
+                 // Number of faculty in database
+                 numEntries = deserializeInt(buffPtr, fData);
+                 // Current next ID to be used when faculty is added
+                 nextFacID = deserializeInt(buffPtr, fData);
+             }
+             
+             // Load all faculty into database
+             for (int i = 0; i < numEntries; ++i) {
+                 Faculty t;
+                 t.deserialize(fData, buffPtr, size);
+                
+                 fTree.insert(t);
+             }
+         }
+         catch(int e){
+             std::cout<<"Faculty file corrupted.\n\nProgram terminating."<<endl;
+             exit(1);
          }
      }
      fFile.close();

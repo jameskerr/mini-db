@@ -103,56 +103,65 @@ void Faculty::serializeBST(TreeNode<int>* n, std::fstream &file){
 }
 
 // Loads faculty object from file data
-bool Faculty::deserialize (char* addr, int &dPtr){
-     try{
-         ID = 0;
-        
-         // Load ID from data
-         ID |= ((int(0 | addr[dPtr++]) & 0xFF) << 24);
-         ID |= ((int(0 | addr[dPtr++]) & 0xFF) << 16);
-         ID |= ((int(0 | addr[dPtr++]) & 0xFF) << 8);
-         ID |= ((int(0 | addr[dPtr++]) & 0xFF) << 0);
-        
-         // Load name
-         name = getStr(dPtr, addr);
-         // Load level
-         level = getStr(dPtr, addr);
-         // Load department
-         department = getStr(dPtr, addr);
+void Faculty::deserialize (char* addr, int &dPtr, unsigned long buffSize){
+     ID = 0;
+    
+     // Load ID from data
+     if (!checkBuffForInt(dPtr, buffSize)) throw 10;
+     ID |= ((int(0 | addr[dPtr++]) & 0xFF) << 24);
+     ID |= ((int(0 | addr[dPtr++]) & 0xFF) << 16);
+     ID |= ((int(0 | addr[dPtr++]) & 0xFF) << 8);
+     ID |= ((int(0 | addr[dPtr++]) & 0xFF) << 0);
+    
+     // Load name
+     name = getStr(dPtr, addr, buffSize);
+     // Load level
+     level = getStr(dPtr, addr, buffSize);
+     // Load department
+     department = getStr(dPtr, addr, buffSize);
+     
+     // number of advisees
+     int numAdvisees = 0;
+     if (!checkBuffForInt(dPtr, buffSize)) throw 10;
+     numAdvisees |= ((int(0 | addr[dPtr++]) & 0xFF) << 24);
+     numAdvisees |= ((int(0 | addr[dPtr++]) & 0xFF) << 16);
+     numAdvisees |= ((int(0 | addr[dPtr++]) & 0xFF) << 8);
+     numAdvisees |= ((int(0 | addr[dPtr++]) & 0xFF) << 0);
+     
+     // all advisees saves to buffer
+     for (int i = 0; i < numAdvisees; ++i) {
+         int temp = 0;
+         if (!checkBuffForInt(dPtr, buffSize)) throw 10;
+         temp |= ((int(0 | addr[dPtr++]) & 0xFF) << 24);
+         temp |= ((int(0 | addr[dPtr++]) & 0xFF) << 16);
+         temp |= ((int(0 | addr[dPtr++]) & 0xFF) << 8);
+         temp |= ((int(0 | addr[dPtr++]) & 0xFF) << 0);
          
-         // number of advisees
-         int numAdvisees = 0;
-         numAdvisees |= ((int(0 | addr[dPtr++]) & 0xFF) << 24);
-         numAdvisees |= ((int(0 | addr[dPtr++]) & 0xFF) << 16);
-         numAdvisees |= ((int(0 | addr[dPtr++]) & 0xFF) << 8);
-         numAdvisees |= ((int(0 | addr[dPtr++]) & 0xFF) << 0);
-
-         // all advisees saves to buffer
-         for (int i = 0; i < numAdvisees; ++i) {
-             int temp = 0;
-             temp |= ((int(0 | addr[dPtr++]) & 0xFF) << 24);
-             temp |= ((int(0 | addr[dPtr++]) & 0xFF) << 16);
-             temp |= ((int(0 | addr[dPtr++]) & 0xFF) << 8);
-             temp |= ((int(0 | addr[dPtr++]) & 0xFF) << 0);
-             
-             advisees.insert(temp);
-         }
+         advisees.insert(temp);
      }
-     catch(std::exception e){
-         return false;
-     }
-     return true;
  }
 
+bool Faculty::checkBuffForInt(int &dPtr, unsigned long buffSize){
+    return (dPtr <= buffSize - 4);
+}
+
+bool Faculty::checkBuffForChar(int &dPtr, unsigned long buffSize){
+    return (dPtr <= buffSize - 1);
+}
+
 // loads string from buffer
- string Faculty::getStr(int &dPtr, char *d){
+ string Faculty::getStr(int &dPtr, char *d, unsigned long buffSize){
      string temp = "";
-    
-     while(d[dPtr] != 0){
-         temp += d[dPtr++];
+     try{
+         while(d[dPtr] != 0){
+             if (!checkBuffForChar(dPtr, buffSize)) throw 10;
+             temp += d[dPtr++];
+         }
+         dPtr++; // increments over null character
      }
-     dPtr++; // increments over null character
-    
+     catch(std::exception e){
+         throw e;
+     }
      return temp;
  }
 
