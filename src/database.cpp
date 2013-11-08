@@ -226,21 +226,20 @@ bool Database::changeAdvisor(int sId, int fId){
     // Get student's current advisor
     if (sNode != 0){
         TreeNode<Faculty>* oldFac = fTree.find(Faculty(sNode->getData().getAdvisor()));
-        if (fId == 0){
-            sNode->getDataPtr()->setAdvisor(fId);
-        }
-        if(fNode != 0){
-            // Add new advisor to student
+        if (fId == 0 || fNode != 0){
             sNode->getDataPtr()->setAdvisor(fId);
             
-            // Add student to advisee list
-            fNode->getDataPtr()->getAdvisees()->insert(sId);
+            if (fNode != 0) {
+                fNode->getDataPtr()->getAdvisees()->insert(sId);
+            }
+            
+            if (oldFac != 0) {
+                oldFac->getDataPtr()->getAdvisees()->remove(sId);
+            }
+            return true;
         }
         // Delete student from old advisor
-        if (oldFac != 0) {
-            oldFac->getDataPtr()->getAdvisees()->remove(sId);
-        }
-        return true;
+        
     }
     return false;
     
@@ -255,10 +254,11 @@ bool Database::removeAdvisee(int fId, int sId){
     if(fNode != 0){
         if (sNode != 0) {
             // Set student advisor to empty, if student is an advisee of faculty member
-            if (fNode->getDataPtr()->getAdvisees()->find(sId))
+            if (fNode->getDataPtr()->getAdvisees()->find(sId)){
                 fNode->getDataPtr()->getAdvisees()->remove(sId);
                 sNode->getDataPtr()->setAdvisor(0);
-            return true;
+                return true;
+            }
         }
     }
     return false;

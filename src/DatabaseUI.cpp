@@ -134,7 +134,7 @@ void DatabaseUI::changeAdvisor() {
 		int oldAdvisor = db->sTree.find(Student(stu))->getData().getAdvisor();
 		int fac = getInt("New faculty advisor ID: ");
 		if (!db->changeAdvisor(stu, fac)) {
-			cout << "That faculty do not exist." << endl;
+			cout << "That faculty does not exist." << endl;
 		} else {
 			history->changedAdvisor(stu, fac, oldAdvisor);
 			cout << "Student #" << stu << " now has faculty #" << fac << " as his/her advisor." << endl;
